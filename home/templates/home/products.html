@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}
+    shop
+{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}" type="text/css" media="screen">
+    <link rel="stylesheet" href="{% static 'home/css/multiple_range.css' %}" type="text/css" media="screen">
+
+
+{% endblock %}
+
+{% block content %}
+
+    <!-- Single Page Header start -->
+    {#    <div class="container-fluid page-header py-5">#}
+    {#        <h1 class="text-center text-white display-6">Shop</h1>#}
+    {#        <ol class="breadcrumb justify-content-center mb-0">#}
+    {#            <li class="breadcrumb-item"><a href="#">Home</a></li>#}
+    {#            <li class="breadcrumb-item"><a href="#">Pages</a></li>#}
+    {#            <li class="breadcrumb-item active text-white">Shop</li>#}
+    {#        </ol>#}
+    {#    </div>#}
+    <!-- Single Page Header End -->
+
+    <!-- Fruits Shop Start-->
+    <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+            <h1 class="mb-4">Health food Shop</h1>
+            <div class="row g-4">
+                <div class="col-lg-12">
+                    <div class="row g-4">
+                        <div class="col-xl-3">
+                            <form action="" method="get">
+                                {#                                {% csrf_token %}#}
+                                <div class="input-group w-100 mx-auto d-flex">
+                                    <input type="search" name="search" class="form-control p-2 border-primary"
+                                           placeholder="name or Ingredients or price"
+                                           aria-describedby="search-icon-1" required>
+                                    <input type="submit" id="search-icon-1"
+                                           class="input-group-text p-3 bg-primary text-white border-primary"
+                                           value="search">
+
+
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="col-6"></div>
+                        <div class="col-xl-3">
+                            <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
+                                <label for="fruits">Default Sorting:</label>
+                                <form action="">
+                                    <div id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3">
+
+                                        <input value="expensive" name="price" type="submit">
+                                        <input value="cheep" name="price" type="submit">
+                                        <input value="newest" name="created" type="submit">
+{#                                        <input value="oldest" name="created" type="submit">#}
+                                        <input value="more discount" name="discount" type="submit">
+{#                                        <input value="low discount" name="discount" type="submit">#}
+
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-lg-3">
+                            <div class="row g-4">
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <h4>Categories</h4>
+                                        <ul class="list-unstyled fruite-categorie">
+                                            {% for  diet in diet_list %}
+                                                <li>
+                                                    <div class="d-flex justify-content-between fruite-name">
+                                                        <a href="{% url 'home:category_products' diet.id diet.slug %}"><i
+                                                                class="bi bi-egg-fried me-2 text-secondary"></i>{{ diet.name }}
+                                                        </a>
+
+                                                        {#                                                        <span>{{ p.stock }}</span>#}
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <form action="">
+                                            <div class="mb-3">
+                                                <h4 class="mb-3">Price</h4>
+
+
+                                                <div slider id="slider-distance">
+                                                    <div>
+                                                        <div inverse-left style="width:70%;"></div>
+                                                        <div inverse-right style="width:70%;"></div>
+                                                        <div range style="left:0%;right: 0%;"></div>
+                                                        <span thumb style="left:0%;"></span>
+                                                        <span thumb style="left:100%;"></span>
+                                                        <div sign style="left:0%;">
+                                                            <span id="value">{{ min }}</span>
+                                                        </div>
+                                                        <div sign style="left:100%;">
+                                                            <span id="value">{{ max }}</span>
+                                                        </div>
+                                                    </div>
+                                                    <input type="range" tabindex="0" value="{{ min }}" min="{{ min }}"
+                                                           max="{{ max }}" step="50000" name="price_1"
+
+                                                           oninput="
+                                              this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
+                                              var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
+                                              var children = this.parentNode.childNodes[1].childNodes;
+                                              children[1].style.width=value+'%';
+                                              children[5].style.left=value+'%';
+                                              children[7].style.left=value+'%';children[11].style.left=value+'%';
+                                              children[11].childNodes[1].innerHTML=this.value;"/>
+
+                                                    <input type="range" tabindex="0" value="{{ max }}" min="{{ min }}"
+                                                           max="{{ max }}" step="50000" name="price_2"
+                                                           oninput="
+                                              this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
+                                              var value=(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.value)-(100/(parseInt(this.max)-parseInt(this.min)))*parseInt(this.min);
+                                              var children = this.parentNode.childNodes[1].childNodes;
+                                              children[3].style.width=(100-value)+'%';
+                                              children[5].style.right=(100-value)+'%';
+                                              children[9].style.left=value+'%';children[13].style.left=value+'%';
+                                              children[13].childNodes[1].innerHTML=this.value;"/>
+                                                </div>
+                                                {#                                                <input type="range" class="form-range w-100" id="rangeInput"#}
+                                                {#                                                       name="price_2" min="{{ min }}" max="{{ max }}" value="0"#}
+                                                {#                                                       oninput="amount.value=rangeInput.value">#}
+                                                {#                                                <output id="amount" name="amount" min-value="0" max-value="500"#}
+                                                {#                                                        for="rangeInput">0#}
+                                                {#                                                </output>#}
+                                                <br>
+                                            </div>
+                                            <br>
+                                            <br>
+                                            {#                                            <h4 class="mb-3">Size</h4>#}
+                                            {#                                              {{ filter.form.size }}#}
+                                            {#                                            <br>#}
+                                            {#                                            <br>#}
+                                            <button type="submit" class="btn btn-secondary">filter</button>
+
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-9">
+                            <div class="row g-4 justify-content-center">
+                                {% for p in products %}
+
+                                    <div class="col-md-6 col-lg-6 col-xl-4 ">
+                                        <div class="rounded position-relative fruite-item ">
+                                            <div class="fruite-img">
+                                                <a href="{{ p.get_absolute_url }}"><img src="{{ p.image.url }}"
+                                                                                        class="img-fluid w-100  rounded-top "
+                                                                                        alt=""
+                                                                                        style="height: 230px"></a>
+                                            </div>
+                                            {#                                            {% if id == p.diet_category.id and slug == p.diet_category.slug%}#}
+                                            {#                                                <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"#}
+                                            {#                                                     style="top: 10px; left: 10px;">{{ p.main_menu.name }}</div>#}
+                                            {#                                            {% else %}#}
+                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                                 style="top: 10px; left: 10px;">{{ p.diet_category }}</div>
+                                            {#                                            {% endif %}#}
+
+                                            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+
+                                                <h6 class="discount ">{{ p.main_menu }} </h6>
+                                                <h4 class="text-primary"> {{ p.name }}</h4>
+{#                                                <h6 class="">{{ p.created|timesince }} ago </h6>#}
+
+
+                                                {#                                                <p>{{ p.description |truncatechars:20 }}</p>#}
+                                                <div class="d-flex justify-content-between flex-lg-wrap">
+
+                                                    {% if p.discount %}
+
+                                                        <p class="discount fs-5 fw-bold mb-0 ">
+                                                            <strike>{{ p.unit_price|floatformat|intcomma }}</strike> $
+                                                        </p>
+                                                        <p class=" fs-5 fw-bold mb-0 ">
+                                                            {{ p.final_price|floatformat|intcomma }}$
+                                                        </p>
+                                                        <div class="disc_amount border border-secondary rounded-pill px-3 text-white fw-bold text-center bg-secondary ">{{ p.discount }}
+                                                            %
+                                                        </div>
+                                                    {% else %}
+
+                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ p.unit_price|floatformat|intcomma }}$</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                                <div class="col-12">
+                                    <div class="pagination d-flex justify-content-center mt-5">
+                                        {% if products.has_previous %}
+                                            <a href="?page={{ products.previous_page_number }}&{{ page_url_data }}"
+                                               class="rounded">&laquo;</a>
+                                            <a href="?page={{ products.previous_page_number }}"
+                                               class=" rounded">{{ products.previous_page_number }}</a>
+
+                                        {% endif %}
+
+                                        <a href="?page={{ products.number }}"
+                                           class="{% if page_num == page_num %}active {% endif %} rounded">{{ products.number }}</a>
+
+                                        {% if products.has_next %}
+                                            <a href="?page={{ products.next_page_number }}&{{ page_url_data }}"
+                                               class=" rounded">{{ products.next_page_number }}</a>
+                                            <a href="?page={{ products.next_page_number }}" class="rounded">&raquo;</a>
+
+
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fruits Shop End-->
+
+{% endblock %}
+{% block js %}
+    <script src="{% static 'home/js/home.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+    Cart
+{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}" type="text/css" media="screen">
+
+{% endblock %}
+
+{% block content %}
+
+
+
+    <!-- Cart Page Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+{#                        <th scope="col">number</th>#}
+                        <th scope="col"> product Image</th>
+                        <th scope="col"> Product</th>
+                        <th scope="col"> size</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Handle</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for c in cart %}
+                        <tr>
+{#                            <th scope="row">#}
+{#                                <div class="pt-4">  {{ forloop.counter }} </div>#}
+{#                            </th>#}
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <a href="{{ c.get_absolute_url }}"> <img src="{{ c.image.url }}" class="img-fluid  "
+                                                                             style="width: 100px; height: 80px; border-radius: 15%"
+                                                                             alt=""></a>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4">{{ c.product }}</p>
+                            </td>
+                            <td><p class="mb-0 mt-4">Normal</p></td>
+                            <td>
+                                {% if c.discount  %}
+                                    <div class="d-flex align-items-center">
+                                        <span class="mb-0 mt-4 text-secondary me-3">  <del>{{ c.unit_price|floatformat|intcomma }}</del>  </span>
+                                        <span class="mb-0 mt-4 ">{{ c.price|floatformat|intcomma }}$</span>
+                                    </div>
+                                {% else %}
+                                    <p class="mb-0 mt-4 ms-5">{{ c.unit_price|floatformat|intcomma }}$</p>
+                                {% endif %}
+
+                            </td>
+                            <td>
+                                <div class="input-group quantity mt-4 " style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <a href="{% url 'cart:product_remove_one' c.id %}"
+                                           class="btn btn-sm btn-minus rounded-circle bg-light border ">
+                                            <i class="fa fa-minus"></i>
+                                        </a>
+                                    </div>
+                                    <input type="text" class="text-dark  text-center border-0 form-control form-control-sm" value="{{ c.quantity }}">
+
+                                    <div class="input-group-btn">
+                                        <a href="{% url 'cart:product_add_one' c.id %}"
+                                           class="btn btn-sm btn-plus rounded-circle bg-light border ">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+
+                                <p class="mb-0 mt-4"> $ {{ c.total_price|floatformat|intcomma  }}</p>
+                            </td>
+                            <td>
+                                <a href="{% url 'cart:remove_from_cart' c.id %}"
+                                   class="btn btn-md rounded-circle bg-light border mt-4">
+                                    <i class="fa fa-times text-danger"></i>
+                                </a>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                      {% for v in var_cart %}
+                        <tr>
+
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <a href="{{ v.get_absolute_url }}"> <img src="{{ v.image.url }}" class="img-fluid  "
+                                                                             style="width: 100px; height: 80px; border-radius: 15%"
+                                                                             alt=""></a>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4">{{ v.variant }}</p>
+                            </td>
+                            <td><p class="mb-0 mt-4">{{ v.size }}</p></td>
+                            <td>
+                                {% if v.discount  %}
+                                    <div class="d-flex align-items-center">
+                                        <span class="mb-0 mt-4 text-secondary me-3">  <del>{{ v.unit_price|floatformat|intcomma }}</del> $ </span>
+                                        <span class="mb-0 mt-4 ">{{ v.price|floatformat|intcomma }}$</span>
+                                    </div>
+                                {% else %}
+                                    <p class="mb-0 mt-4 ms-5">{{ v.unit_price|floatformat|intcomma }}$</p>
+                                {% endif %}
+
+                            </td>
+                            <td>
+                                <div class="input-group quantity mt-4 " style="width: 100px;">
+                                    <div class="input-group-btn">
+                                        <a href="{% url 'cart:variant_remove_one' v.id %}"
+                                           class="btn btn-sm btn-minus rounded-circle bg-light border ">
+                                            <i class="fa fa-minus"></i>
+                                        </a>
+                                    </div>
+                                    <input type="text"
+                                           class="text-dark  text-center border-0 form-control form-control-sm"
+                                           value="{{ v.quantity }}">
+
+                                    <div class="input-group-btn">
+                                        <a href="{% url 'cart:variant_add_one' v.id %}"
+                                           class="btn btn-sm btn-plus rounded-circle bg-light border ">
+                                            <i class="fa fa-plus" {% if v.quantity == 1 %}disabled {% endif %} ></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+
+                                <p class="mb-0 mt-4"> $ {{ v.total_price|floatformat|intcomma  }}</p>
+                            </td>
+                            <td>
+                                <a href="{% url 'cart:var_remove_from_cart' v.id %}"
+                                   class="btn btn-md rounded-circle bg-light border mt-4">
+                                    <i class="fa fa-times text-danger"></i>
+                                </a>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row g-4 justify-content-end">
+                <div class="col-8"></div>
+                <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+                    <div class="bg-light rounded">
+                        <div class="p-4">
+                            <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
+                            <div class="d-flex justify-content-between mb-4">
+                                <h5 class="mb-0 me-4">Subtotal:</h5>
+                                <p class="mb-0">${{ cart.total|add:var_cart.total|intcomma }}</p>
+                            </div>
+{#                            <div class="d-flex justify-content-between">#}
+{#                                <h5 class="mb-0 me-4">Shipping cost :</h5>#}
+{#                                <p class="mb-0">${{ cart.shipping|add:var_cart.shipping|intcomma }}<i class="fas fa-shipping-fast"></i>#}
+{#                                </p>#}
+                                {#                                <div class="">#}
+                                {#                                    <p class="mb-0">your profit : $ {{ cart.total_profit }}</p>#}
+                                {#                                </div>#}
+{#                            </div>#}
+                            {#                            <p class="mb-0 text-end">Shipping .</p>#}
+                        </div>
+{#                        <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">#}
+{#                            <h5 class="mb-0 ps-4 me-4">Total Price</h5>#}
+{#                            <p class="mb-0 pe-4">${{ cart.final_cost|add:var_cart.final_cost|intcomma }}</p>#}
+{#                        </div>#}
+                        {% if cart or var_cart %}
+                            <a href="{% url 'cart:order_create' %}"
+                               class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4 mt-5"
+                               type="button">Proceed Checkout
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cart Page End -->
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i
+            class="fa fa-arrow-up"></i></a>
+
+{% endblock %}
+{% block js %}
+
+
+{% endblock %}

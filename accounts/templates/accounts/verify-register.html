@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+
+{% block title %}
+    verify
+{% endblock %}
+{% block css %}
+
+    <link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+{% endblock %}
+{% block content %}
+
+    <div class="main">
+        <section class="sign-in">
+            <div class="container_signup">
+                <div class="signin-content">
+                    <div class="signin-image">
+                        <figure><img src="{% static 'image/signin-image.jpg' %}" alt="sing up image"></figure>
+                    </div>
+
+                    <div class="signin-form">
+                        <h5 class="form-title">verify your phone number</h5>
+                        <form method="POST" class="register-form" id="verify" action="" novalidate>
+                            {% csrf_token %}
+                            {#                            {{ form.as_p }}#}
+                            <div class="form-group">
+                                <label for="Code"> </label>
+                                <input type="text" name="code" id="code" placeholder="enter your code" required/>
+                            </div>
+
+                            <div class="form-group form-button">
+                                <input type="submit" name="verify" id="verify" class="form-submit" value="verify"/>
+                            </div>
+
+                        </form>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </div>
+    {#   <div style="height: 60vh "  >#}
+    {#    <form method="post" action="" novalidate  >#}
+    {#    {% csrf_token %}#}
+    {#    {{ form }}#}
+    {#    </form>#}
+    {#   </div>#}
+{% endblock %}
+{% block js %}
+    <script src="{% static 'accounts/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'accounts/vendor/jquery/jquery-ui.min.js' %}"></script>
+
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'fonts/material-icon/css/material-design-iconic-font.min.css' %}">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% block title %}
+    personal information form
+{% endblock %}
+<link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">
+
+{% block css %}
+
+    <link rel="stylesheet" href="{% static 'accounts/css/accounts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+{% endblock %}
+{% block content %}
+    <div class="container">
+        {#        <h1>Edit Profile</h1>#}
+        {#        <hr>#}
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-3 mt-5">
+                <div class="">
+                    <img src="{% static 'image/signup-image.jpg' %}"
+                         class="avatar img-circle" alt="avatar">
+
+
+                </div>
+            </div>
+            <!-- edit form column -->
+            <div class="col-md-9 personal-info mt-5">
+                <div class="alert alert-info alert-dismissable">
+                    <a class="panel-close close" data-dismiss="alert">×</a>
+                    <i class="fa fa-coffee"></i>
+                    This is an <strong>.alert</strong>. Are these information correct for receiver?
+                </div>
+                <h3 class="mt-5 ">Personal receiver info</h3>
+
+                <form class="form-horizontal mt-5" role="form" action="" method="post" novalidate>
+                    {% csrf_token %}
+{#                    {{ form.as_p }}#}
+                    <div class="form-group d-flex justify-content-evenly">
+                        <label class="col-md-3 control-label " for="id_phone_number">Phone Number :</label>
+                        <div class="col-md-8">
+                            <input type="text" name="phone_number" class="form-control " id="id_phone_number" required value="{{ request.user.phone_number }}"
+                                   maxlength=11>
+                        </div>
+                    </div>
+                    <div class="form-group d-flex justify-content-evenly">
+                        <label class="col-md-3 control-label" for="id_first_name">First Name :</label>
+                        <div class="col-md-8">
+                            <input type="text" name="first_name" maxlength=255 class="form-control " id="id_first_name"
+                                   value="{{ request.user.first_name }}">
+                        </div>
+                    </div>
+                    <div class="form-group d-flex justify-content-evenly">
+                        <label class="col-md-3 control-label" for="id_last_name">Last Name :</label>
+                        <div class="col-md-8">
+                            <input type="text" name="last_name" class="form-control " maxlength=255 id="id_last_name"
+                                   value="{{ request.user.last_name }}">
+                        </div>
+                    </div>
+                    <div class="form-group d-flex justify-content-evenly">
+                        <label class="col-md-3 control-label" for="id_address">Address :</label>
+                        <div class="col-md-8">
+                            <textarea name="address" class="form-control " cols="10" rows="2"
+                                      id="id_address">{{ request.user.address }}</textarea>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group d-flex justify-content-evenly">
+                        <label class="col-md-3 control-label"></label>
+                        <div class="col-md-8">
+                            <input type="submit" class="btn btn-primary text-white" value="Save Changes">
+                            <span></span>
+                            <input type="reset" class="btn btn-default" value="Cancel">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block js %}
+
+    <script src="{% static 'accounts/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'accounts/js/main.js' %}"></script>
+
+
+
+{% endblock %}

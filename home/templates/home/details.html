@@ -1,0 +1,661 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+{% load homefilters %}
+
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}" type="text/css" media="screen"
+          xmlns="http://www.w3.org/1999/html">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" media="screen">
+
+
+{% endblock %}
+
+{% block content %}
+
+    <!-- Modal Search Start -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content rounded-0">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Search by keyword</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex align-items-center">
+                    <div class="input-group w-75 mx-auto d-flex">
+                        <input type="search" class="form-control p-3" placeholder="keywords"
+                               aria-describedby="search-icon-1">
+                        <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Search End -->
+
+
+    <!-- Single Page Header start -->
+    {#    <div class="container-fluid page-header py-5">#}
+    {#        <h1 class="text-center text-white display-6">Shop Detail</h1>#}
+    {#        <ol class="breadcrumb justify-content-center mb-0">#}
+    {#            <li class="breadcrumb-item"><a href="#">Home</a></li>#}
+    {#            <li class="breadcrumb-item"><a href="#">Pages</a></li>#}
+    {#            <li class="breadcrumb-item active text-white">Shop Detail</li>#}
+    {#        </ol>#}
+    {#    </div>#}
+    <!-- Single Page Header End -->
+
+
+    <!-- Single Product Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row g-4 mb-5">
+                <div class="col-lg-7 col-xl-9">
+                    <div class="row g-4">
+                        <div class="col-lg-6">
+                            <div id="carouselExampleCaptions" class="carousel slide">
+                                <div class="carousel-indicators">
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0"
+                                            class="active" aria-current="true" aria-label="Slide 1"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                                            aria-label="Slide 2"></button>
+                                    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                                            aria-label="Slide 3"></button>
+                                </div>
+                                <div class="carousel-inner">
+                                    {% for img in product_images %}
+                                        <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                                            <img src="{{ img.image.url }}" class="d-block w-100 "
+                                                 style="height: 300px ; border-radius: 20px"
+                                                 alt="{{ img.name }}">
+                                            <div class="carousel-caption d-none d-md-block">
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+                                </div>
+                                {#                                <button class="carousel-control-prev" type="button"#}
+                                {#                                        data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">#}
+                                {#                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>#}
+                                {#                                    <span class="visually-hidden">Previous</span>#}
+                                {#                                </button>#}
+                                {#                                <button class="carousel-control-next" type="button"#}
+                                {#                                        data-bs-target="#carouselExampleCaptions" data-bs-slide="next">#}
+                                {#                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>#}
+                                {#                                    <span class="visually-hidden">Next</span>#}
+                                {#                                </button>#}
+                            </div>
+                            <div class="row d-flex align-items-center justify-content-start flex-row mt-4">
+                                {% for img in product_images %}
+                                    <img src="{{ img.image.url }}"
+                                         style="height: 70px ;width: 100px ;border-radius: 20%"
+                                         alt="{{ img.name }}">
+
+                                {% endfor %}
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-6">
+                            <h4 class="fw-bold mb-3">{{ product.name }}</h4>
+                            <p class="mb-3"><span class="text-dark bold"> Category : </span>{{ product.diet_category }}
+                            </p>
+                            <p class="mb-3"><span class="text-dark bold">Menu : </span>{{ product.menu_item }}</p>
+
+                            {% if product.status == 'size' %}
+                                <form action="" id="">
+                                    <select name="select_var" id="" onchange="this.form.submit()"
+                                            class="rounded p-2 mb-3 ">
+                                        {% for var in product.p_variants.all %}
+                                            <option value="{{ var.id }}"
+                                                    {% if var.stock == 0 %}disabled{% endif %}
+                                                    {% if var.id == selected_var.id %} selected {% endif %}
+                                            >{{ var.size.name }}</option>
+
+                                        {% endfor %}
+                                    </select>
+                                </form>
+
+                            {% endif %}
+                            {% if product.status == 'none' %}
+                                {% if product.discount %}
+                                    <div class="d-flex  align-items-center">
+                                        <p class="discount  fs-5 fw-bold mb-0 me-4">
+                                            <del>{{ product.unit_price|floatformat|intcomma }} $</del>
+
+
+                                        </p>
+                                        <span class="fw-bold text-secondary">% {{ product.discount }} </span>
+                                    </div>
+                                    <p class="text-dark fs-5 fw-bold mb-0">{{ product.final_price|floatformat|intcomma }}
+                                        $</p>
+
+                                {% else %}
+                                    <p class="text-dark fs-5 fw-bold mb-0">{{ product.unit_price|floatformat|intcomma }}
+                                        $</p>
+                                {% endif %}
+
+                            {% else %}
+                                {% if product.discount %}
+                                    <div class="d-flex align-items-center ">
+                                        <p class="discount  fs-5 fw-bold mb-0 me-4">
+                                            <del class="">{{ selected_var.unit_price|floatformat|intcomma }} $</del>
+
+                                        </p>
+                                        <span class="fw-bold text-secondary">% {{ selected_var.discount }} </span>
+                                    </div>
+                                    <p class="text-dark fs-5 fw-bold mb-0">{{ selected_var.final_price|floatformat|intcomma }}
+                                        $</p>
+
+                                {% else %}
+                                    <p class="text-dark fs-5 fw-bold mb-0">{{ selected_var.unit_price|floatformat|intcomma }}
+                                        $</p>
+                                {% endif %}
+
+                            {% endif %}
+                            <div class="d-flex align-items-center justify-content-between ">
+                                <h6 class=""> rate : <span class="text-secondary">{{ product.average }}</span></h6>
+                                <div class="d-flex mb-4 me-5">
+                                    <i class="fa fa-star  {% if  product.average > 0 %}text-secondary {% endif %}"></i>
+                                    <i class="fa fa-star  {% if  product.average > 1 %}text-secondary {% endif %}"></i>
+                                    <i class="fa fa-star  {% if product.average > 2 %}text-secondary {% endif %}"></i>
+                                    <i class="fa fa-star  {% if product.average > 3 %}text-secondary {% endif %}"></i>
+                                    <i class="fa fa-star  {% if product.average > 4 %}text-secondary {% endif %}"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    {#                                    {{product.average | stringformat:".2f"}}#}
+                                </div>
+                            </div>
+                            <p class="mb-4">{{ product.description|safe }}</p>
+                            {% if product.status == 'none' %}
+                                <form action="{% url 'cart:add_to_cart' product.id %}" method="post" novalidate
+                                      name="cart_form">
+                                    {% csrf_token %}
+
+                                    <div class="wrap input-group-btn mb-3">
+                                        <button type="button" id="sub"
+                                                class="sub btn btn-sm btn-minus rounded-circle bg-light border"><i
+                                                class="fa fa-minus"></i></button>
+                                        <input name="quantity"
+                                               class="count  text-center border-0"
+                                               type="text"
+                                               id="1" value="1" min="1" style="width: 50px"
+                                        />
+                                        <button type="button" id="add"
+                                                class="add btn btn-sm btn-plus rounded-circle bg-light border"><i
+                                                class="fa fa-plus"></i></button>
+                                    </div>
+
+                                    <input value="Add to Cart" type="submit"
+                                           class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+
+                                </form>
+                            {% endif %}
+                            {% if product.status == 'size' %}
+                                <form action="{% url 'cart:add_to_variant_cart' selected_var.id %}" method="post"
+                                      novalidate
+                                      name="cart_form">
+                                    {% csrf_token %}
+
+                                    <div class="wrap input-group-btn mb-3">
+                                        <button type="button" id="sub"
+                                                class="sub btn btn-sm btn-minus rounded-circle bg-light border"><i
+                                                class="fa fa-minus"></i></button>
+                                        <input name="quantity"
+                                               class="count  text-center border-0"
+                                               type="text"
+                                               id="1" value="1" min="1" style="width: 50px"
+                                        />
+                                        <button type="button" id="add"
+                                                class="add btn btn-sm btn-plus rounded-circle bg-light border"><i
+                                                class="fa fa-plus"></i></button>
+                                    </div>
+
+                                    <input value="Add to Cart" type="submit"
+                                           class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+
+                                </form>
+
+                            {% endif %}
+
+                        </div>
+
+                        <div class="col-lg-12">
+                            <nav>
+                                <div class="nav nav-tabs mb-3">
+                                    <button class="nav-link active border-white border-bottom-0" type="button"
+                                            role="tab"
+                                            id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
+                                            aria-controls="nav-about" aria-selected="true">Description
+                                    </button>
+                                    <button class="nav-link border-white border-bottom-0" type="button" role="tab"
+                                            id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
+                                            aria-controls="nav-mission" aria-selected="false">Reviews
+                                        ({{ product.num_comments }})
+                                    </button>
+                                </div>
+                            </nav>
+                            <div class="tab-content mb-5">
+                                <div class="tab-pane active" id="nav-about" role="tabpanel"
+                                     aria-labelledby="nav-about-tab">
+                                    <p>The generated Lorem Ipsum is therefore always free from repetition injected
+                                        humour, or non-characteristic words etc.
+                                        Susp endisse ultricies nisi vel quam suscipit </p>
+                                    <p>Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish
+                                        filefish Antarctic
+                                        icefish goldeye aholehole trumpetfish pilot fish airbreathing catfish, electric
+                                        ray sweeper.</p>
+                                    <div class="px-2">
+                                        <div class="row g-4">
+                                            <div class="col-6">
+                                                <div class="row bg-light align-items-center text-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Weight</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">1 kg</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row text-center align-items-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Country of Origin</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Agro Farm</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row bg-light text-center align-items-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Quality</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Organic</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row text-center align-items-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Сheck</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Healthy</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row bg-light text-center align-items-center justify-content-center py-2">
+                                                    <div class="col-6">
+                                                        <p class="mb-0">Min Weight</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-0">250 Kg</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="nav-mission" role="tabpanel"
+                                     aria-labelledby="nav-mission-tab">
+
+                                    {% for com in comments %}
+                                        <div class="d-flex flex-column">
+                                            <img src="{% static 'image/avatar.jpg' %}"
+                                                 class="img-fluid rounded-circle p-3"
+                                                 style="width: 100px; height: 100px;" alt="">
+                                            <div class="comment_reply">
+                                                <p class="mb-2" style="font-size: 14px;">{{ com.created|timesince }}
+                                                    ago</p>
+                                                <div class="d-flex justify-content-between">
+                                                    <p class="fw-bold ">{{ com.user|truncatechars:7 }}</p>
+                                                    {% if com.rate %}
+                                                        <div class="d-flex mb-3 ">
+                                                            <i class="fa fa-star text-secondary{% if com.rate < 1 %}-o empty {% endif %}"></i>
+                                                            <i class="fa fa-star text-secondary{% if com.rate < 2 %}-o empty {% endif %}"></i>
+                                                            <i class="fa fa-star text-secondary{% if com.rate < 3 %}-o empty {% endif %}"></i>
+                                                            <i class="fa fa-star text-secondary{% if com.rate < 4 %}-o empty {% endif %}"></i>
+                                                            <i class="fa fa-star text-secondary{% if com.rate < 5 %}-o empty {% endif %}"></i>
+
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+
+                                                <h5>{{ com.body }}</h5>
+
+                                                <span>
+                                                    <i class="{{ com|comlikechecker:request.user }} fa-thumbs-up fs-2 text-primary cursor"
+                                                       onclick="like_comment({{ com.id }},'{% url 'home:comment_like' %}','{% url 'accounts:login' %}?next={% url 'home:details' product.id product.slug %}')"
+                                                       id="com_like{{ com.id }}"></i>
+                                                    <span class="text-secondary"
+                                                          id="like_counter">{{ com.like_count }}</span>
+                                                    </span>
+                                                <span>
+                                                    <i class="{{ com|comdislikechecker:request.user }} fa-thumbs-down fs-2 text-primary cursor"
+                                                       onclick="dislike_comment({{ com.id }},'{% url 'home:comment_dislike' %}','{% url 'accounts:login' %}?next={% url 'home:details' product.id product.slug %}')"
+                                                       id="com_dislike"></i>
+                                                    <span class="text-secondary"
+                                                          id="dislike_counter">{{ com.dislike_count }}</span>
+
+                                                    </span>
+                                                <hr>
+
+
+                                                {% for reply in com.replies.all %}
+                                                    <div class="row">
+                                                        <div class="col-1"></div>
+                                                        <div class=" col-11 d-flex flex-column gy-2  ">
+                                                            <div class="replies px-3 rounded">
+                                                                <img src="{% static 'image/avatar.jpg' %}"
+                                                                     class="img-fluid rounded-circle p-3"
+                                                                     style="width: 50px; height: 50px;" alt="">
+
+                                                                <p class="mb-2"
+                                                                   style="font-size: 14px;">{{ reply.created|timesince }}
+                                                                    ago <i class="fa fa-reply text-primary "></i></p>
+                                                                <div class="d-flex justify-content-between">
+                                                                    <p class="fw-bold ">{{ reply.user|truncatechars:7 }}</p>
+                                                                    <h5>{{ reply.body }}{{ reply.count }}</h5>
+                                                                </div>
+
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                        {# <button onclick="show_hide()"> show/hid</button>#}
+                                        <div id="" class="">
+
+                                            <form action="{% url 'home:reply' product.id product.slug com.id %}?type=reply"
+                                                  method="post">
+
+                                                {% csrf_token %}
+
+                                                <div class="row m-2 border rounded ">
+                                                    <div class="col-12 ">
+
+                                                        <div class=" rounded my-4 d-flex align-items-center justify-content-between ">
+
+                                                            <textarea name="body" id="body" class="form-control "
+                                                                      rows="2" placeholder="Your Reply "></textarea>
+                                                            <div class="form-group form-button">
+                                                                <input type="submit"
+                                                                       class="form-submit btn border border-secondary text-primary rounded-pill p-3 m-3"
+                                                                       value="Reply"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                        <hr>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <form action="" method="post">
+                            {% csrf_token %}
+
+                            <h4 class="mb-5 fw-bold">Leave a Comment</h4>
+                            <div class="row g-4 card ">
+                                <div class="d-flex align-items-center">
+                                    <p class="mb-0 me-3">Please rate:</p>
+                                    <div class="d-flex align-items-center rating " style="font-size: 12px;">
+                                        <input type="radio" name="rate" value="5" id="5"><label
+                                            class="label_rating pe-3"
+                                            for="5">&star;</label>
+                                        <input type="radio" name="rate" value="4" id="4"><label
+                                            class="label_rating"
+                                            for="4">&star;</label>
+                                        <input type="radio" name="rate" value="3" id="3"><label
+                                            class="label_rating"
+                                            for="3">&star;</label>
+                                        <input type="radio" name="rate" value="2" id="2"><label
+                                            class="label_rating"
+                                            for="2">&star;</label>
+                                        <input type="radio" name="rate" value="1" id="1"><label
+                                            class="label_rating"
+                                            for="1">&star;</label>
+
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="border-bottom rounded my-4">
+                                            <textarea name="body" id="" class="form-control " rows="4"
+                                                      placeholder="Your Review " required></textarea>
+                                    </div>
+                                </div>
+
+                                <div class=" py-3 mb-5">
+                                    <div class="form-group form-button">
+                                        <input type="submit"
+                                               class="form-submit btn border border-secondary text-primary rounded-pill px-4 py-3"
+                                               value="Post Comment"/>
+                                    </div>
+                                </div>
+                            </div>
+                            {#                        {% endif %}#}
+                        </form>
+                    </div>
+
+                </div>
+                <div class="col-lg-5 col-xl-3">
+                    <div class="row g-4 fruite">
+                        <div class="col-lg-12">
+                            <form action="" method="get">
+                                {#                                {% csrf_token %}#}
+                                <div class="input-group w-100 mx-auto d-flex mb-5">
+                                    <input type="search" name="search" class="form-control p-2 border-primary"
+                                           placeholder="Search"
+                                           aria-describedby="search-icon-1" required>
+                                    <input type="submit" id="search-icon-1" value="search"
+                                           class="input-group-text p-3 bg-primary text-white border-primary ">
+                                    {#                                           ><i class="fa-solid fa-magnifying-glass"></i>#}
+
+                                </div>
+
+                            </form>
+                            <div class="mb-4">
+                                <h4> Categories</h4>
+                                <ul class="list-unstyled fruite-categorie">
+                                    {% for diet in diet_list %}
+                                        <li>
+                                            <div class="d-flex justify-content-between fruite-name">
+                                                <a href="{% url 'home:category_products' diet.id diet.slug %}"><i
+                                                        class="fas fa-lemon text-primary me-2"
+                                                        aria-hidden="true"></i>{{ diet.name }}
+                                                </a>
+                                                <span><i class="fa fa-check text-secondary"
+                                                         aria-hidden="true"></i></span>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <h4 class="mb-4">Featured products</h4>
+                            {% for pro in products %}
+                                {% if pro.discount %}
+                                    {% if pro.available_products %}
+                                        {% if product.id != pro.id %}
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <div class=" rounded" style="width: 80px; height: 80px;">
+                                                    <a href="{{ pro.get_absolute_url }}">
+                                                        <img src="{{ pro.image.url }}" class="img-fluid rounded"
+                                                             alt="Image">
+                                                    </a>
+                                                </div>
+                                                <div class=" ">
+                                                    <h6 class="">{{ pro.name }}</h6>
+                                                    <div class="d-flex mb-4">
+                                                        <i class="fa fa-star  {% if  pro.average > 0 %}text-secondary {% endif %}"></i>
+                                                        <i class="fa fa-star  {% if  pro.average > 1 %}text-secondary {% endif %}"></i>
+                                                        <i class="fa fa-star  {% if pro.average > 2 %}text-secondary {% endif %}"></i>
+                                                        <i class="fa fa-star  {% if pro.average > 3 %}text-secondary {% endif %}"></i>
+                                                        <i class="fa fa-star  {% if pro.average > 4 %}text-secondary {% endif %}"></i>
+                                                    </div>
+                                                    <div class="d-flex ">
+                                                        <h5 class="fw-bold ">{{ pro.final_price|floatformat|intcomma }}</h5>
+                                                        <h5 class="text-danger text-decoration-line-through"> {{ pro.unit_price|floatformat|intcomma }} </h5>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="position-relative">
+                                <img src="{% static 'image/banner-fruits.jpg' %}" class="img-fluid w-100 rounded"
+                                     alt="">
+                                <div class="position-absolute"
+                                     style="top: 50%; right: 10px; transform: translateY(-50%);">
+                                    <h3 class="text-secondary fw-bold">Healthy<br> food <br> Banner</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="related_pro">
+            <h1 class="fw-bold mb-0">Related products</h1>
+            <div class="vesitable">
+                <div class="owl-carousel vegetable-carousel justify-content-center">
+                    {% for tag in similar %}
+                        <div class="border border-primary rounded position-relative vesitable-item">
+                            <div class="vesitable-img">
+                                <img src="{{ tag.image.url }}" class="img-fluid rounded-top" alt="{{ tag.name }}">
+                            </div>
+                            <div class="text-white bg-primary px-3 py-1 rounded position-absolute"
+                                 style="top: 10px; right: 10px;">{{ tag.main_menu.name }}
+                            </div>
+                            <div class="p-4 pb-0 rounded-bottom">
+                                <h4>{{ tag.name }}</h4>
+                                {% if tag.status == 'none' %}
+                                    {% if tag.discount %}
+                                        <h6 class="bg-secondary text-white px-2 rounded"
+                                            style="width: fit-content;height: auto"> %{{ tag.discount }}</h6>
+                                    {% endif %}
+                                {% else %}
+                                    <h6 class="bg-secondary text-white px-2 rounded"
+                                        style="width: fit-content;height: auto"> %{{ tag.variant.discount }}</h6>
+
+                                {% endif %}
+
+                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
+                                    incididunt</p>
+                                <div class="d-flex justify-content-between flex-lg-wrap">
+                                    {% if tag.status == 'none' %}
+                                        {% if tag.discount %}
+                                            <p class="text-dark fs-5 fw-bold">
+                                                ${{ tag.final_price|floatformat|intcomma }}</p>
+
+                                        {% endif %}
+                                    {% else %}
+                                        <p class="text-dark fs-5 fw-bold">
+                                            ${{ tag.selected_var.final_price|floatformat|intcomma }}</p>
+
+                                    {% endif %}
+                                    <p class="text-dark fs-5 fw-bold">${{ tag.final_price|floatformat|intcomma }}</p>
+                                    <a href="{% url 'home:details' tag.id tag.slug %}"
+                                       class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary"><i
+                                            class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="" style="width: 600px;height: 400px;">
+            <canvas id="myChart"></canvas>
+        </div>
+    </div>
+
+
+
+    <!-- Single Product End -->
+
+{% endblock %}
+{% block js %}
+    <script>
+        $('#add').click(function () {
+            var th = $(this).closest('.wrap').find('.count');
+            th.val(+th.val() + 1);
+        });
+        $('#sub').click(function () {
+            var th = $(this).closest('.wrap').find('.count');
+            if (th.val() > 1) th.val(+th.val() - 1);
+        });
+    </script>
+    <script>
+        const ctx = document.getElementById('myChart');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                {% if product.status == 'none' %}
+                    labels: [
+                        {% for p in product.changes.all %}
+                            '{{ p.date }}',
+                        {% endfor %}
+                    ],
+                {% else %}
+                    labels: [
+                        {% for v in selected_var.var_changes.all %}
+                            '{{ v.date|date:"Y:m:d" }}',
+                        {% endfor %}
+                    ],
+                {% endif %}
+
+                datasets: [{
+                    {% if product.status == 'none' %}
+                        label: 'price change of ' + '{{ product.name }}',
+                    {% else %}
+                        label: 'price change of ' + '{{selected_var }}',
+
+                    {% endif %}
+                    {% if product.status == 'none' %}
+                        data: [
+                            {% for p in product.changes.all %}
+                                '{{ p.unit_price }}',
+                            {% endfor %}
+                        ],
+                    {% else %}
+                        data: [
+                            {% for v in selected_var.var_changes.all %}
+                                '{{ v.unit_price }}',
+                            {% endfor %}
+                        ],
+                    {% endif %}
+                    borderWidth: 1,
+                    borderColor: '#FFB524',
+                    backgroundColor: '#81C408',
+                    Color:'#81C408'
+
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+    <script src="{% static 'home/js/details.js' %}"></script>
+
+
+{% endblock %}
