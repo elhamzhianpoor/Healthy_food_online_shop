@@ -25,13 +25,17 @@ class Product(BaseModel):
     available_products = models.BooleanField()
     stock = models.IntegerField(default=0)
     tags = TaggableManager(blank=True)
-    # like_product = models.ManyToManyField('accounts.User', related_name='liked_products', blank=True)
+    like_product = models.ManyToManyField('accounts.User', related_name='liked_products', blank=True)
     diet_category = models.ForeignKey('DietCategory', on_delete=models.PROTECT, related_name='diet_category', null=True)
     main_menu = models.ForeignKey('MainMenu', on_delete=models.PROTECT, related_name='main_menu', null=True)
     menu_item = models.ForeignKey('MenuItem', on_delete=models.PROTECT, related_name='menu_item', null=True)
     status = models.CharField(choices=STATUS, max_length=6, default='none')
     discount = models.PositiveIntegerField(default=0)
     size = models.ManyToManyField('Size', related_name='size', blank=True)
+    sell = models.IntegerField(default=0)
+    favourite = models.ManyToManyField('accounts.User', related_name='user_favourite', blank=True)
+    total_favourite = models.IntegerField(default=0)
+
 
     def __str__(self):
         return self.name
@@ -63,12 +67,22 @@ class Product(BaseModel):
             star = int(data['counts'])
         return star
 
+    @property
+    def likes_count(self):
+        return self.like_product.count()
+
+    def like_checkers(self,user):
+        if self.like_product.filter(id=user.id).exists():
+            return 'fa-solid'
+        return 'fa-regular'
+
     # def reply_count(self):
     #     data = Comment.objects.filter(is_reply=True,product=self).aggregate(counts=Count('body'))
     #     star = 0
     #     if data['counts'] is not None:
     #         star = int(data['counts'])
     #     return star
+
 
 
 class DietCategory(BaseModel):
@@ -173,6 +187,7 @@ class Variant(BaseModel):
     discount = models.PositiveIntegerField(default=0)
     available = models.BooleanField()
     stock = models.PositiveIntegerField()
+    sell = models.IntegerField(default=0)
 
     def __str__(self):
         return f'{self.product.name} - {self.size.name}'

@@ -1,8 +1,9 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from home.forms import *
 from cart.forms import CartForm
-from home.models import Product, DietCategory, MainMenu, Comment, Image, MenuItem ,Variant
+from home.models import Product, DietCategory, MainMenu, Comment, Image, MenuItem, Variant, Size
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
@@ -10,32 +11,67 @@ from django.http import JsonResponse
 from django.db.models import Q,Max,Min,Avg
 from .filters import ProductFilter
 from django.core.paginator import Paginator
+from urllib.parse import urlencode
 
 
 class HomeView(View):
+    form_class = SearchForm
+
     def get(self, request):
         products = Product.objects.all()
         diet_list = DietCategory.objects.all()
         main_menu = MainMenu.objects.all()
         menu_item = MenuItem.objects.all()
         comments = Comment.objects.filter(rate__gte=4)
+
+        if search := request.GET.get('search'):
+            minimum = Product.objects.aggregate(unit_price=Min('unit_price'))
+            min_price = int(minimum['unit_price'])
+            maximum = Product.objects.aggregate(unit_price=Max('unit_price'))
+            max_price = int(maximum['unit_price'])
+            my_filter = ProductFilter(request.GET, queryset=products)
+            products = my_filter.qs
+            products = products.filter(Q(name__icontains=search)
+                                       | Q(description__icontains=search)
+                                       | Q(unit_price__icontains=search))
+            paginator = Paginator(products, 6)
+            page_num = request.GET.get('page')
+            products = paginator.get_page(page_num)
+            page_url_data = request.GET.copy()
+
+            if 'page' in page_url_data:
+                del page_url_data['page']
+
+            ctx = {
+                'search_form': self.form_class(),
+                'products': products,
+                'page_num': page_num,
+                'filter': my_filter,
+                'max': max_price,
+                'min': min_price,
+                'page_url_data': page_url_data,
+            }
+            return render(request,'home/products.html',ctx)
         # best_pro = Product.objects.filter(average__gte=4)
+
         ctx = {
             'products': products,
             'diet_list': diet_list,
             'main_menu': main_menu,
             'menu_item': menu_item,
             'comments': comments,
+
             # 'best_pro': best_pro,
 
         }
+
         return render(request, 'home/home.html', ctx)
 
 
 class ProductView(View):
     form_class = SearchForm
 
-    def get(self, request, id=None, slug=None):
+    def get(self, request, id=None, slug=None ):
         # print(request.session.get('cart'))
         products = Product.objects.all()
         minimum = Product.objects.aggregate(unit_price=Min('unit_price'))
@@ -45,11 +81,16 @@ class ProductView(View):
         my_filter = ProductFilter(request.GET, queryset=products)
         products = my_filter.qs
         diet_list = DietCategory.objects.filter(available=True)
+        # if products.status != 'none':
+        #     vars = Variant.objects.filter(available=True)
+        # sizes = Size.objects.all()
 
         if id and slug:
-
             products = products.filter(diet_category__id=id, diet_category__slug=slug)
             # diet_list = DietCategory.objects.filter(available=True)
+        # if size:
+        #     products = products.filter(size__name=size)
+
         if search := request.GET.get('search'):
             products = products.filter(Q(name__icontains=search)
                                        | Q(description__icontains=search)
@@ -57,10 +98,10 @@ class ProductView(View):
 
         paginator = Paginator(products,6)
         page_num = request.GET.get('page')
+        data = request.GET.copy()
         products = paginator.get_page(page_num)
-        page_url_data = request.GET.copy()
-        if 'page' in page_url_data:
-            del page_url_data['page']
+        if 'page' in data:
+            del data['page']
 
         ctx = {
             'products': products,
@@ -70,7 +111,9 @@ class ProductView(View):
             'filter': my_filter,
             'max': max_price,
             'min': min_price,
-            'page_url_data': page_url_data,
+            'data':urlencode(data),
+            # 'variant': vars,
+            # 'sizes':sizes
         }
         return render(request, 'home/products.html', ctx)
 
@@ -199,7 +242,8 @@ class ProductDetailsView(View):
             'diet_list': DietCategory.objects.all(),
             'selected_var': selected_var,
             'cart_form': CartForm(),
-            'similar': similar
+            'similar': similar,
+            'like_class':product.like_checkers(request.user)
 
         }
         return render(request, self.template_name, ctx)
@@ -255,8 +299,29 @@ class ProductDetailsView(View):
 
 
 class ProductLikeView(View):
-    def get(self, request, product_id):
-        product = get_object_or_404(Product, id=product_id)
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            data = {
+                'login_required': True
+            }
+            return JsonResponse(data)
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        product = get_object_or_404(Product, id=request.GET.get('product_id'))
+        if product.like_product.filter(id=request.user.id).exists():
+            product.like_product.remove(request.user)
+            p_liked = False
+        else:
+            product.like_product.add(request.user)
+            p_liked = True
+        product.save()
+        data ={
+            'p_liked': p_liked,
+            'p_liker_count':product.likes_count
+        }
+        messages.success(request, 'Your product has been liked.',"success")
+        return JsonResponse(data)
 
 
 class CommentLikeView(View):

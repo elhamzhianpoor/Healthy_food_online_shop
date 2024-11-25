@@ -247,10 +247,12 @@ class VerifyPaymentView(View):
                     if not p.variant:
                         product = Product.objects.filter(id=p.product_id).first()
                         product.stock -= p.quantity
+                        product.sell += p.quantity
                         product.save()
                     else:
                         variant = Variant.objects.filter(id=p.variant_id).first()
                         variant.stock -= p.quantity
+                        variant.sell += p.quantity
                         variant.save()
 
                 return render(request, 'cart/verify-payment.html', {'order': order})

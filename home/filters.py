@@ -6,7 +6,7 @@ from .models import *
 class ProductFilter(django_filters.FilterSet):
     choice_price = {
         ('expensive', 'expensive'),
-        ('cheep', 'cheep'),
+        ('inexpensive', 'inexpensive'),
     }
     choice_create = {
         ('Newest', 'newest'),
@@ -17,15 +17,20 @@ class ProductFilter(django_filters.FilterSet):
         ('most discount', 'most discount'),
         ('low discount', 'low discount'),
     }
+    choice_sell = {
+        ('most sell', 'most sell'),
+        ('low sell', 'low sell'),
+
+    }
     price_1 = django_filters.NumberFilter(field_name='unit_price', lookup_expr='gte')
     price_2 = django_filters.NumberFilter(field_name='unit_price', lookup_expr='lte')
     size = django_filters.ModelMultipleChoiceFilter(queryset=Size.objects.all(),widget=forms.CheckboxSelectMultiple)
     price = django_filters.ChoiceFilter(choices=choice_price,method='price_filter')
     created = django_filters.ChoiceFilter(choices=choice_create,method='create_filter')
     discount = django_filters.ChoiceFilter(choices=choice_discount,method='discount_filter')
-
+    sell = django_filters.ChoiceFilter(choices=choice_sell,method='sell_filter')
     def price_filter(self, queryset, name, value):
-        data = 'unit_price' if value == 'cheep' else '-unit_price'
+        data = 'unit_price' if value == 'inexpensive' else '-unit_price'
         return queryset.order_by(data)
 
     def create_filter(self, queryset, name, value):
@@ -34,4 +39,8 @@ class ProductFilter(django_filters.FilterSet):
 
     def discount_filter(self, queryset, name, value):
         data = 'discount' if value == 'low discount' else '-discount'
+        return queryset.order_by(data)
+
+    def sell_filter(self, queryset, name, value):
+        data = 'sell' if value == 'low sell' else '-sell'
         return queryset.order_by(data)

@@ -12,5 +12,6 @@ urlpatterns = [
     path('details/<int:id>/<slug:slug>/<int:com_id>', views.ProductDetailsView.as_view(), name='reply'),
     path('comment_like/',views.CommentLikeView.as_view(),name='comment_like'),
     path('comment_dislike/', views.CommentDislikeView.as_view(), name='comment_dislike'),
+    path('product_like/',views.ProductLikeView.as_view(), name='product_like'),
 
 ]

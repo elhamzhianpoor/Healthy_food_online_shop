@@ -14,3 +14,5 @@ def com_dislike_checker(com,user):
     if com.disliked_comment.filter(id=user.id).exists():
         return 'fa-solid'
     return 'fa-regular'
+
+

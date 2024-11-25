@@ -1,4 +1,4 @@
-from home.models import MainMenu, DietCategory, MenuItem
+from home.models import MainMenu, DietCategory, MenuItem, Product
 
 
 def main_menu_cp(request):
@@ -19,3 +19,4 @@ def diet_category_cp(request):
     return {
         'diet_cat': DietCategory.objects.filter(available=True)
     }
+

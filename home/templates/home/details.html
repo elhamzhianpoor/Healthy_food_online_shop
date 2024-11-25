@@ -101,7 +101,12 @@
 
 
                         <div class="col-lg-6">
-                            <h4 class="fw-bold mb-3">{{ product.name }}</h4>
+                            <div class="d-flex justify-content-start ">
+                                <h4 class="fw-bold mb-3">{{ product.name }}</h4>
+                                <i class="{{ like_class }} fa-heart fs-3 text-danger ms-4 cursor"
+                                   onclick="product_like({{ product.id }},'{% url "home:product_like" %}','{% url "accounts:login" %}?next={% url 'home:details' product.id product.slug %}')" id="p_like"></i>
+                                <span class="ms-4" id="p_liker_count">{{ product.likes_count }}</span>
+                            </div>
                             <p class="mb-3"><span class="text-dark bold"> Category : </span>{{ product.diet_category }}
                             </p>
                             <p class="mb-3"><span class="text-dark bold">Menu : </span>{{ product.menu_item }}</p>
@@ -119,44 +124,52 @@
                                         {% endfor %}
                                     </select>
                                 </form>
+                                {% if selected_var.discount %}
+                                    <div class="d-flex align-items-center ">
+
+                                        <p class="text-dark fs-5 fw-bold mb-0 me-4">{{ selected_var.final_price|floatformat|intcomma }}
+                                            $</p>
+                                        <span class="disc_amount  rounded-pill align-items-center text-white
+                                                                 fw-bold text-center bg-danger fs-6 "
+                                              style="height: 25px;width: 45px">% {{ selected_var.discount }} </span>
+                                    </div>
+                                    <p class="discount  fs-6 fw-bold mb-0 ">
+                                        <del class="">{{ selected_var.unit_price|floatformat|intcomma }} $</del>
+
+                                    </p>
+
+
+                                {% else %}
+
+                                    <p class="text-dark fs-5 fw-bold mb-0">{{ selected_var.unit_price|floatformat|intcomma }}
+                                        $</p>
+                                {% endif %}
+
 
                             {% endif %}
                             {% if product.status == 'none' %}
                                 {% if product.discount %}
                                     <div class="d-flex  align-items-center">
-                                        <p class="discount  fs-5 fw-bold mb-0 me-4">
-                                            <del>{{ product.unit_price|floatformat|intcomma }} $</del>
+                                        <p class="text-dark fs-5 fw-bold mb-0 me-4">{{ product.final_price|floatformat|intcomma }}
+                                            $</p>
 
-
-                                        </p>
-                                        <span class="fw-bold text-secondary">% {{ product.discount }} </span>
+                                        <span class="disc_amount  rounded-pill align-items-center text-white
+                                                                 fw-bold text-center bg-danger fs-6 "
+                                              style="height: 25px;width: 45px">% {{ product.discount }} </span>
                                     </div>
-                                    <p class="text-dark fs-5 fw-bold mb-0">{{ product.final_price|floatformat|intcomma }}
-                                        $</p>
+                                    <p class="discount  fs-6 fw-bold mb-0 ">
+                                        <del>{{ product.unit_price|floatformat|intcomma }} $</del>
+
+
+                                    </p>
+
 
                                 {% else %}
                                     <p class="text-dark fs-5 fw-bold mb-0">{{ product.unit_price|floatformat|intcomma }}
                                         $</p>
                                 {% endif %}
-
-                            {% else %}
-                                {% if product.discount %}
-                                    <div class="d-flex align-items-center ">
-                                        <p class="discount  fs-5 fw-bold mb-0 me-4">
-                                            <del class="">{{ selected_var.unit_price|floatformat|intcomma }} $</del>
-
-                                        </p>
-                                        <span class="fw-bold text-secondary">% {{ selected_var.discount }} </span>
-                                    </div>
-                                    <p class="text-dark fs-5 fw-bold mb-0">{{ selected_var.final_price|floatformat|intcomma }}
-                                        $</p>
-
-                                {% else %}
-                                    <p class="text-dark fs-5 fw-bold mb-0">{{ selected_var.unit_price|floatformat|intcomma }}
-                                        $</p>
-                                {% endif %}
-
                             {% endif %}
+
                             <div class="d-flex align-items-center justify-content-between ">
                                 <h6 class=""> rate : <span class="text-secondary">{{ product.average }}</span></h6>
                                 <div class="d-flex mb-4 me-5">
@@ -331,7 +344,7 @@
                                                 <span>
                                                     <i class="{{ com|comdislikechecker:request.user }} fa-thumbs-down fs-2 text-primary cursor"
                                                        onclick="dislike_comment({{ com.id }},'{% url 'home:comment_dislike' %}','{% url 'accounts:login' %}?next={% url 'home:details' product.id product.slug %}')"
-                                                       id="com_dislike"></i>
+                                                       id="com_dislike{{ com.id }}"></i>
                                                     <span class="text-secondary"
                                                           id="dislike_counter">{{ com.dislike_count }}</span>
 
@@ -533,44 +546,59 @@
             <div class="vesitable">
                 <div class="owl-carousel vegetable-carousel justify-content-center">
                     {% for tag in similar %}
-                        <div class="border border-primary rounded position-relative vesitable-item">
+                        <div class="border border-primary rounded position-relative vesitable-item"
+                             style="height: 470px">
                             <div class="vesitable-img">
-                                <img src="{{ tag.image.url }}" class="img-fluid rounded-top" alt="{{ tag.name }}">
+                                <img src="{{ tag.image.url }}" class="img-fluid rounded-top" style="height: 300px"
+                                     alt="{{ tag.name }}">
                             </div>
                             <div class="text-white bg-primary px-3 py-1 rounded position-absolute"
                                  style="top: 10px; right: 10px;">{{ tag.main_menu.name }}
                             </div>
                             <div class="p-4 pb-0 rounded-bottom">
                                 <h4>{{ tag.name }}</h4>
-                                {% if tag.status == 'none' %}
+                                {#                                {% if tag.status == 'none' %}#}
+                                {#                                    {% if tag.discount %}#}
+                                {#                                        <h6 class="bg-secondary text-white px-2 rounded"#}
+                                {#                                            style="width: fit-content;height: auto"> %{{ tag.discount }}</h6>#}
+                                {#                                    {% endif %}#}
+                                {#                                {% else %}#}
+                                {#                                    <h6 class="bg-secondary text-white px-2 rounded"#}
+                                {#                                        style="width: fit-content;height: auto"> %{{ tag.variant.discount }}</h6>#}
+                                {##}
+                                {#                                {% endif %}#}
+
+                                <p>{{ tag.description|truncatechars:15|safe }}</p>
+
+                                <div class="d-flex justify-content-between  flex-lg-wrap">
+                                    {#                                    {% if tag.status == 'none' %}#}
                                     {% if tag.discount %}
-                                        <h6 class="bg-secondary text-white px-2 rounded"
-                                            style="width: fit-content;height: auto"> %{{ tag.discount }}</h6>
-                                    {% endif %}
-                                {% else %}
-                                    <h6 class="bg-secondary text-white px-2 rounded"
-                                        style="width: fit-content;height: auto"> %{{ tag.variant.discount }}</h6>
-
-                                {% endif %}
-
-                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit sed do eiusmod te
-                                    incididunt</p>
-                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                    {% if tag.status == 'none' %}
-                                        {% if tag.discount %}
-                                            <p class="text-dark fs-5 fw-bold">
-                                                ${{ tag.final_price|floatformat|intcomma }}</p>
-
-                                        {% endif %}
+                                        <p class="text-dark fs-5 fw-bold">
+                                            ${{ tag.final_price|floatformat|intcomma }}</p>
+                                        <h6 class="bg-secondary text-white px-2 rounded mt-1"
+                                            style="width: fit-content;height: 25px"> %{{ tag.discount }}</h6>
                                     {% else %}
                                         <p class="text-dark fs-5 fw-bold">
-                                            ${{ tag.selected_var.final_price|floatformat|intcomma }}</p>
+                                            ${{ tag.final_price|floatformat|intcomma }}</p>
+
 
                                     {% endif %}
-                                    <p class="text-dark fs-5 fw-bold">${{ tag.final_price|floatformat|intcomma }}</p>
+                                    {#                                    {% endif %}#}
+                                    {#                                    {% if tag.status == 'size' %}#}
+                                    {#                                        {% if tag.discount %}#}
+                                    {#                                            <p class="text-dark fs-5 fw-bold">#}
+                                    {#                                                ${{ tag.selected_var.final_price|floatformat|intcomma }}</p>#}
+                                    {#                                            <h6 class="bg-secondary text-white px-2 rounded mt-1"#}
+                                    {#                                                style="width: fit-content;height: 25px">#}
+                                    {#                                                %{{ tag.variant.discount }}</h6>#}
+                                    {#                                            {% else %}#}
+                                    {#                                            <p class="text-dark fs-5 fw-bold">#}
+                                    {#                                                ${{ tag.selected_var.final_price|floatformat|intcomma }}</p>#}
+                                    {#                                        {% endif %}#}
+                                    {#                                    {% endif %}#}
                                     <a href="{% url 'home:details' tag.id tag.slug %}"
                                        class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary"><i
-                                            class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                            class="fa fa-shopping-bag me-2 text-primary"></i> More</a>
                                 </div>
                             </div>
                         </div>
@@ -582,7 +610,6 @@
             <canvas id="myChart"></canvas>
         </div>
     </div>
-
 
 
     <!-- Single Product End -->
@@ -642,7 +669,7 @@
                     borderWidth: 1,
                     borderColor: '#FFB524',
                     backgroundColor: '#81C408',
-                    Color:'#81C408'
+                    Color: '#81C408'
 
                 }]
             },

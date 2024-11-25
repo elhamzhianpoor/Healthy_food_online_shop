@@ -13,10 +13,37 @@
 //     var_form.submit()
 // }
 
+function product_like(product_id,product_like_url,login_url){
+    $.ajax({
+        url:product_like_url,
+        type:'get',
+        data:{
+           'product_id':product_id
+        },
+        success:function (data){
+             if (data['login_required']) {
+                window.location.href = login_url
+            }
+            let like_btn = document.getElementById('p_like')
+            if (data['p_liked']) {
+                like_btn.classList.remove('fa-regular')
+                like_btn.classList.add('fa-solid')
+            } else {
+                like_btn.classList.remove('fa-solid')
+                like_btn.classList.add('fa-regular')
+            }
+            let liker_c = document.getElementById('p_liker_count')
+            liker_c.innerText = data['p_liker_count']
+
+        }
+    })
+
+}
 
 
-function like_comment(comment_id, like_url, login_url, event) {
-    event.preventDefault()
+
+function like_comment(comment_id, like_url, login_url) {
+    // event.preventDefault()
     $.ajax({
         url: like_url,
         type: 'get',
@@ -27,8 +54,8 @@ function like_comment(comment_id, like_url, login_url, event) {
             if (data['login_required']) {
                 window.location.href = login_url
             }
-            let com_like_btn = document.getElementById('com_like' + comment_id)
-            let com_dislike_btn = document.getElementById('com_dislike')
+            let com_like_btn = document.getElementById('com_like'+comment_id)
+            let com_dislike_btn = document.getElementById('com_dislike'+comment_id)
 
             if (data['liked']) {
                 com_like_btn.classList.remove('fa-regular')
@@ -65,8 +92,8 @@ function dislike_comment(comment_id, like_url, login_url) {
             if (data['login_required']) {
                 window.location.href = login_url
             }
-            let com_like_btn = document.getElementById('com_like')
-            let com_dislike_btn = document.getElementById('com_dislike')
+            let com_like_btn = document.getElementById('com_like'+comment_id)
+            let com_dislike_btn = document.getElementById('com_dislike'+comment_id)
             if (data['disliked']) {
                 com_dislike_btn.classList.remove('fa-regular')
                 com_dislike_btn.classList.add('fa-solid')

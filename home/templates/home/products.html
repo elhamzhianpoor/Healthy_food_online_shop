@@ -37,11 +37,11 @@
                                 {#                                {% csrf_token %}#}
                                 <div class="input-group w-100 mx-auto d-flex">
                                     <input type="search" name="search" class="form-control p-2 border-primary"
-                                           placeholder="name or Ingredients or price"
+                                           placeholder="Search..."
                                            aria-describedby="search-icon-1" required>
-                                    <input type="submit" id="search-icon-1"
-                                           class="input-group-text p-3 bg-primary text-white border-primary"
-                                           value="search">
+                                    <button type="submit" id="search-icon-1"
+                                            class="input-group-text p-3 bg-primary text-white border-primary"
+                                    ><i class="fa fa-search"></i></button>
 
 
                                 </div>
@@ -49,26 +49,40 @@
                             </form>
                         </div>
                         <div class="col-6"></div>
-                        <div class="col-xl-3">
+                        <div class="col-xl-12 ">
                             <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
-                                <label for="fruits">Default Sorting:</label>
+                                <label class="mt-2" for="fruits">Default Sorting:</label>
                                 <form action="">
-                                    <div id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3">
+                                    <div id="fruits" name="fruitlist" class="border-0  bg-light me-3  ">
 
-                                        <input value="expensive" name="price" type="submit">
-                                        <input value="cheep" name="price" type="submit">
-                                        <input value="newest" name="created" type="submit">
-{#                                        <input value="oldest" name="created" type="submit">#}
-                                        <input value="more discount" name="discount" type="submit">
-{#                                        <input value="low discount" name="discount" type="submit">#}
+                                        <input value="expensive" name="price" type="submit"
+                                               class="btn border border-secondary rounded-pill px-3 text-primary mt-2">
+                                        <input value="inexpensive" name="price" type="submit"
+                                               class="btn border border-secondary rounded-pill px-3 text-primary mt-2 ">
+                                        <input value="newest" name="created" type="submit"
+                                               class="btn border border-secondary rounded-pill px-3 text-primary mt-2">
+                                        {#                            <input value="most popular" name="created" type="submit"#}
+                                        {#                                   class="btn border border-secondary rounded-pill px-3 text-primary mt-2 ">#}
+                                        <input value="most discount" name="discount" type="submit"
+                                               class="btn border border-secondary rounded-pill px-3 text-primary mt-2">
+                                        {#                            <input value="customer review" name="discount" type="submit"#}
+                                        {#                                   class="btn border border-secondary rounded-pill px-3 text-primary mt-2">#}
+                                        <input value="most sell" name="sell" type="submit"
+                                               class="btn border border-secondary rounded-pill px-3 text-primary mt-2">
 
+
+                                    </div>
+                                    <div style="display: none">
+                                        {{ filter.form.size }}
+                                        {{ filter.form.price_1 }}
+                                        {{ filter.form.price_2 }}
                                     </div>
 
                                 </form>
                             </div>
                         </div>
                     </div>
-                    <div class="row g-4">
+                    <div class=" row g-4">
                         <div class="col-lg-3">
                             <div class="row g-4">
                                 <div class="col-lg-12">
@@ -111,7 +125,8 @@
                                                             <span id="value">{{ max }}</span>
                                                         </div>
                                                     </div>
-                                                    <input type="range" tabindex="0" value="{{ min }}" min="{{ min }}"
+                                                    <input type="range" tabindex="0" value="{{ min }}"
+                                                           min="{{ min }}"
                                                            max="{{ max }}" step="50000" name="price_1"
 
                                                            oninput="
@@ -123,7 +138,8 @@
                                               children[7].style.left=value+'%';children[11].style.left=value+'%';
                                               children[11].childNodes[1].innerHTML=this.value;"/>
 
-                                                    <input type="range" tabindex="0" value="{{ max }}" min="{{ min }}"
+                                                    <input type="range" tabindex="0" value="{{ max }}"
+                                                           min="{{ min }}"
                                                            max="{{ max }}" step="50000" name="price_2"
                                                            oninput="
                                               this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
@@ -142,25 +158,34 @@
                                                 {#                                                </output>#}
                                                 <br>
                                             </div>
+                                            <h4 class="mb-3"> Size</h4>
+                                            <label for="" class="fs-6 text-primary ">
+                                                {{ filter.form.size }}
+                                            </label>
+
                                             <br>
-                                            <br>
-                                            {#                                            <h4 class="mb-3">Size</h4>#}
-                                            {#                                              {{ filter.form.size }}#}
-                                            {#                                            <br>#}
-                                            {#                                            <br>#}
-                                            <button type="submit" class="btn btn-secondary">filter</button>
+                                            <div style="display: none">
+                                                {{ filter.form.created }}
+                                                {{ filter.form.price }}
+                                                {{ filter.form.discount }}
+                                                {{ filter.form.sell }}
+                                                {#                                                     {{ filter.form.size }}#}
+                                                {#                                                     {{ filter.form.size }}#}
+
+                                            </div>
+                                            <button type="submit" class="btn btn-secondary mt-3">filter</button>
 
                                         </form>
 
                                     </div>
                                 </div>
 
+
                             </div>
                         </div>
                         <div class="col-lg-9">
                             <div class="row g-4 justify-content-center">
                                 {% for p in products %}
-
                                     <div class="col-md-6 col-lg-6 col-xl-4 ">
                                         <div class="rounded position-relative fruite-item ">
                                             <div class="fruite-img">
@@ -173,36 +198,75 @@
                                             {#                                                <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"#}
                                             {#                                                     style="top: 10px; left: 10px;">{{ p.main_menu.name }}</div>#}
                                             {#                                            {% else %}#}
-                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                                            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute "
                                                  style="top: 10px; left: 10px;">{{ p.diet_category }}</div>
                                             {#                                            {% endif %}#}
 
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
 
                                                 <h6 class="discount ">{{ p.main_menu }} </h6>
+{#                                                {% if p.status == 'none' %}#}
+{#                                                    <h1>{{ p.sell }}</h1>#}
+{#                                                    {% else %}#}
+{#                                                    {% for v in vars %}#}
+{#                                                        {{ v.sell }}#}
+{#                                                    {% endfor %}#}
+{#                                                {% endif %}#}
+
                                                 <h4 class="text-primary"> {{ p.name }}</h4>
-{#                                                <h6 class="">{{ p.created|timesince }} ago </h6>#}
+                                                {#                                                <h6 class="">{{ p.created|timesince }} ago </h6>#}
 
 
                                                 {#                                                <p>{{ p.description |truncatechars:20 }}</p>#}
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
+                                                {#                                                {% if p.status == 'size' %}#}
+                                                {#                                                    {% for var in p.p_variants.all %}#}
+                                                {#                                                        <div class="d-flex align-items-center ">#}
+                                                {#                                                            <p class="fw-bold mb-0 ">{{ var.size.name }}#}
+                                                {#                                                               <p class=" mb-0 "> : {{ var.unit_price|floatformat|intcomma }}</p>#}
+                                                {#                                                            {% if var.discount %}#}
+                                                {#                                                                <p class="disc_amount  rounded-pill align-items-center text-white#}
+                                                {#                                                                 fw-bold text-center bg-danger fs-6  ms-2 mt-3"#}
+                                                {#                                                                   style="height: 25px;width: 45px">{{ var.discount }}#}
+                                                {#                                                                %{% endif %}</p>#}
+                                                {#                                                            <br>#}
+                                                {#                                                        </div>#}
+                                                {#                                                    {% endfor %}#}
+                                                {#                                                {% endif %}#}
+                                                <div class="d-flex justify-content-between flex-lg-wrap ">
 
+                                                    {#                                                    {% if p.status == 'none' %}#}
                                                     {% if p.discount %}
+                                                        <div class="d-flex justify-content-between flex-lg-wrap  flex-column">
+                                                            <p class=" fs-5 fw-bold mb-0 ">
+                                                                {{ p.final_price|floatformat|intcomma }}$
+                                                            </p>
 
-                                                        <p class="discount fs-5 fw-bold mb-0 ">
-                                                            <strike>{{ p.unit_price|floatformat|intcomma }}</strike> $
-                                                        </p>
-                                                        <p class=" fs-5 fw-bold mb-0 ">
-                                                            {{ p.final_price|floatformat|intcomma }}$
-                                                        </p>
-                                                        <div class="disc_amount border border-secondary rounded-pill px-3 text-white fw-bold text-center bg-secondary ">{{ p.discount }}
-                                                            %
+                                                            <div class="d-flex justify-content-evenly flex-lg-wrap ">
+                                                                <p class="discount fs-6 fw-bold mb-0 me-4">
+                                                                    <strike>{{ p.unit_price|floatformat|intcomma }}</strike>
+                                                                    $
+                                                                </p>
+                                                                <div class="disc_amount  rounded-pill align-items-center text-white
+                                                                 fw-bold text-center bg-danger fs-6 "
+                                                                     style="height: 25px;width: 45px">{{ p.discount }}
+                                                                    %
+                                                                </div>
+                                                            </div>
                                                         </div>
+
+
                                                     {% else %}
 
-                                                        <p class="text-dark fs-5 fw-bold mb-0">{{ p.unit_price|floatformat|intcomma }}$</p>
+                                                        <p class="text-dark fs-5 fw-bold mb-3 mt-2">{{ p.unit_price|floatformat|intcomma }}$</p>
                                                     {% endif %}
+                                                    {#                                                    {% endif %}#}
                                                 </div>
+
+                                                <a href="{{ p.get_absolute_url }}"
+                                                   class="btn border border-secondary rounded-pill px-3 text-primary mt-4"><i
+                                                        class="fa fa-shopping-bag me-2 text-primary "></i> More</a>
+
+
                                             </div>
                                         </div>
                                     </div>
@@ -211,20 +275,21 @@
                                 <div class="col-12">
                                     <div class="pagination d-flex justify-content-center mt-5">
                                         {% if products.has_previous %}
-                                            <a href="?page={{ products.previous_page_number }}&{{ page_url_data }}"
+                                            <a href="?page={{ products.previous_page_number }}&{{ data }}"
                                                class="rounded">&laquo;</a>
-                                            <a href="?page={{ products.previous_page_number }}"
+                                            <a href="?page={{ products.previous_page_number }}&{{ data }}"
                                                class=" rounded">{{ products.previous_page_number }}</a>
 
                                         {% endif %}
 
-                                        <a href="?page={{ products.number }}"
+                                        <a href="?page={{ products.number }}&{{ data }}"
                                            class="{% if page_num == page_num %}active {% endif %} rounded">{{ products.number }}</a>
 
                                         {% if products.has_next %}
-                                            <a href="?page={{ products.next_page_number }}&{{ page_url_data }}"
+                                            <a href="?page={{ products.next_page_number }}&{{ data }}"
                                                class=" rounded">{{ products.next_page_number }}</a>
-                                            <a href="?page={{ products.next_page_number }}" class="rounded">&raquo;</a>
+                                            <a href="?page={{ products.next_page_number }}&{{ data }}"
+                                               class="rounded">&raquo;</a>
 
 
                                         {% endif %}
