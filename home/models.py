@@ -33,9 +33,8 @@ class Product(BaseModel):
     discount = models.PositiveIntegerField(default=0)
     size = models.ManyToManyField('Size', related_name='size', blank=True)
     sell = models.IntegerField(default=0)
-    favourite = models.ManyToManyField('accounts.User', related_name='user_favourite', blank=True)
+    favourite = models.ManyToManyField('accounts.User', related_name='fav_user', blank=True)
     total_favourite = models.IntegerField(default=0)
-
 
     def __str__(self):
         return self.name
@@ -82,7 +81,6 @@ class Product(BaseModel):
     #     if data['counts'] is not None:
     #         star = int(data['counts'])
     #     return star
-
 
 
 class DietCategory(BaseModel):

@@ -1,19 +1,19 @@
 from django.contrib import admin
-
 from cart.cart import Cart
 from cart.models import *
 
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
-    extra = 0
-    fields = ('size','unit_price','stock','discount','available')
+    extra = 1
+    # fields = ('size','unit_price','stock','discount','available',)
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('user', 'paid', 'created', 'modified')
-    inlines = [OrderItemInline]
+    inlines = [OrderItemInline,]
+
 
 @admin.register(Coupon)
 class CouponAdmin(admin.ModelAdmin):

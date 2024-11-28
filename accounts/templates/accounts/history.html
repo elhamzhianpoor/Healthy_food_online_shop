@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}
+    favourite
+{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/history.css' %}" type="text/css" media="screen">
+
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+
+        <div class="timeline mt-5 ">
+            {% for o in order_list %}
+                <div class="container_t left">
+                    {% if o.order.paid %}
+                        <i class="icon fa fa-gift"></i>
+                    {% else %}
+                        <i class="icon fa fa-home"></i>
+                    {% endif %}
+                    <div class="content">
+                        <h3>name :{{ o.product.name }} &nbsp; price:{{ o.order.get_total_price }} &nbsp;
+                            date:{{ o.order.created }}</h3>
+
+                    </div>
+                </div>
+                <div class="container_t right">
+                    {% if o.order.paid %}
+                        <i class="icon fa fa-gift"></i>
+                    {% else %}
+                        <i class="icon fa fa-home"></i>
+                    {% endif %}
+                    <div class="content">
+                        <h3>name :{{ o.product.name }} &nbsp; price:{{ o.order.get_total_price }} &nbsp;
+                            date:{{ o.order.created }}</h3>
+
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endblock %}
+{% block js %}
+    <script src="{% static 'home/js/home.js' %}"></script>
+
+{% endblock %}

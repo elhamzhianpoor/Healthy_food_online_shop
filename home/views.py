@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
 from django.http import JsonResponse
-from django.db.models import Q,Max,Min,Avg
+from django.db.models import Q, Max, Min, Avg
 from .filters import ProductFilter
 from django.core.paginator import Paginator
 from urllib.parse import urlencode
@@ -51,7 +51,7 @@ class HomeView(View):
                 'min': min_price,
                 'page_url_data': page_url_data,
             }
-            return render(request,'home/products.html',ctx)
+            return render(request, 'home/products.html', ctx)
         # best_pro = Product.objects.filter(average__gte=4)
 
         ctx = {
@@ -71,7 +71,7 @@ class HomeView(View):
 class ProductView(View):
     form_class = SearchForm
 
-    def get(self, request, id=None, slug=None ):
+    def get(self, request, id=None, slug=None):
         # print(request.session.get('cart'))
         products = Product.objects.all()
         minimum = Product.objects.aggregate(unit_price=Min('unit_price'))
@@ -96,7 +96,7 @@ class ProductView(View):
                                        | Q(description__icontains=search)
                                        | Q(unit_price__icontains=search))
 
-        paginator = Paginator(products,6)
+        paginator = Paginator(products, 6)
         page_num = request.GET.get('page')
         data = request.GET.copy()
         products = paginator.get_page(page_num)
@@ -111,7 +111,7 @@ class ProductView(View):
             'filter': my_filter,
             'max': max_price,
             'min': min_price,
-            'data':urlencode(data),
+            'data': urlencode(data),
             # 'variant': vars,
             # 'sizes':sizes
         }
@@ -124,7 +124,7 @@ class MenuView(View):
     def get(self, request, id=None, slug=None):
         diet_list = DietCategory.objects.filter(available=True)
         products = Product.objects.all()
-        menus= MainMenu.objects.all()
+        menus = MainMenu.objects.all()
         minimum = Product.objects.aggregate(unit_price=Min('unit_price'))
         min_price = int(minimum['unit_price'])
         maximum = Product.objects.aggregate(unit_price=Max('unit_price'))
@@ -133,13 +133,13 @@ class MenuView(View):
         products = my_filter.qs
 
         if id and slug:
-            products = products.filter(main_menu__id=id,main_menu__slug=slug)
+            products = products.filter(main_menu__id=id, main_menu__slug=slug)
             # diet_list = MainMenu.objects.filter(available=True)
 
         if search := request.GET.get('search'):
             products = products.filter(Q(name__icontains=search)
-                                       |Q(description__icontains=search)
-                                       |Q(unit_price__icontains=search))
+                                       | Q(description__icontains=search)
+                                       | Q(unit_price__icontains=search))
         paginator = Paginator(products, 6)
         page_num = request.GET.get('page')
         products = paginator.get_page(page_num)
@@ -168,7 +168,7 @@ class MenuItemView(View):
     def get(self, request, id=None, slug=None):
         diet_list = DietCategory.objects.filter(available=True)
         products = Product.objects.all()
-        menu_item= MenuItem.objects.all()
+        menu_item = MenuItem.objects.all()
         minimum = Product.objects.aggregate(unit_price=Min('unit_price'))
         min_price = int(minimum['unit_price'])
         maximum = Product.objects.aggregate(unit_price=Max('unit_price'))
@@ -177,13 +177,13 @@ class MenuItemView(View):
         products = my_filter.qs
 
         if id and slug:
-            products = products.filter(menu_item__id=id,menu_item__slug=slug)
+            products = products.filter(menu_item__id=id, menu_item__slug=slug)
             # diet_list = MenuItem.objects.filter(available=True)
 
         if search := request.GET.get('search'):
             products = products.filter(Q(name__icontains=search)
-                                       |Q(description__icontains=search)
-                                       |Q(unit_price__icontains=search))
+                                       | Q(description__icontains=search)
+                                       | Q(unit_price__icontains=search))
 
         paginator = Paginator(products, 6)
         page_num = request.GET.get('page')
@@ -203,7 +203,6 @@ class MenuItemView(View):
             'min': min_price,
             'page_url_data': page_url_data,
 
-
         }
         return render(request, 'home/products.html', ctx)
 
@@ -218,7 +217,7 @@ class ProductDetailsView(View):
 
     def get(self, request, *args, **kwargs):
         product = self.product_instance
-        products= Product.objects.all()
+        products = Product.objects.all()
         product_images = Image.objects.filter(product=self.product_instance)
         similar = product.tags.similar_objects()[:6]
         comment = Comment.objects.filter(product=product, is_reply=False).order_by('-created')
@@ -227,23 +226,28 @@ class ProductDetailsView(View):
             selected_var = Variant.objects.filter(product=product).first()
 
         if var_id := request.GET.get('select_var'):
-           selected_var = Variant.objects.filter(id=var_id).first()
+            selected_var = Variant.objects.filter(id=var_id).first()
 
         if search := request.GET.get('search'):
             products = products.filter(Q(name__icontains=search) | Q(description__icontains=search))
-            return render(request, 'home/products.html', { 'search_form': self.form_class(),'products': products,})
+            return render(request, 'home/products.html', {'search_form': self.form_class(), 'products': products, })
+        is_favourite = False
+        if product.favourite.filter(id=request.user.id).exists():
+            # messages.success(request, 'Your product add/remove to your favourite.', "success")
+            is_favourite = True
 
         ctx = {
             'product': product,
             'comment_form': CommentForm(),
-            'comments':comment,
-            'product_images':product_images,
+            'comments': comment,
+            'product_images': product_images,
             'products': products,
             'diet_list': DietCategory.objects.all(),
             'selected_var': selected_var,
             'cart_form': CartForm(),
             'similar': similar,
-            'like_class':product.like_checkers(request.user)
+            'like_class': product.like_checkers(request.user),
+            'is_favourite': is_favourite,
 
         }
         return render(request, self.template_name, ctx)
@@ -256,13 +260,14 @@ class ProductDetailsView(View):
         # similar = product.tags.similar_objects()[:2]
         form = CommentForm(request.POST)
         rep_form = ReplyForm(request.POST)
+
         if not _type:
             if form.is_valid():
                 cm = form.save(commit=False)
                 cm.user = request.user
                 cm.product = product
                 cm.save()
-                messages.success(request, 'Your comment has been submitted.',"success")
+                messages.success(request, 'Your comment has been submitted.', "success")
                 return redirect('home:details', product.id, product.slug)
                 # cd = form.cleaned_data
                 # cm=Comment.objects.create(body=cd['body'],rate=cd['rate'],user_id=request.user.id,product_id=product.id)
@@ -286,7 +291,7 @@ class ProductDetailsView(View):
                 rep.reply_to = rep_to_comment
                 rep.is_reply = True
                 rep.save()
-                messages.success(request, 'Your Reply has been submitted.',"success")
+                messages.success(request, 'Your Reply has been submitted.', "success")
                 # return redirect('home:details', product.id, product.slug)
                 return redirect(url)
             ctx = {
@@ -312,15 +317,17 @@ class ProductLikeView(View):
         if product.like_product.filter(id=request.user.id).exists():
             product.like_product.remove(request.user)
             p_liked = False
+
         else:
             product.like_product.add(request.user)
             p_liked = True
+
         product.save()
-        data ={
+        data = {
             'p_liked': p_liked,
-            'p_liker_count':product.likes_count
+            'p_liker_count': product.likes_count
         }
-        messages.success(request, 'Your product has been liked.',"success")
+        # messages.success(request, 'Your product add to your favourite.', "success")
         return JsonResponse(data)
 
 
@@ -328,7 +335,7 @@ class CommentLikeView(View):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             data = {
-                'login_required':True
+                'login_required': True
             }
             return JsonResponse(data)
         return super().dispatch(request, *args, **kwargs)
@@ -345,7 +352,7 @@ class CommentLikeView(View):
             cm.liked_comment.remove(request.user)
             liked = False
 
-        else :
+        else:
             cm.liked_comment.add(request.user)
             liked = True
 
@@ -356,7 +363,7 @@ class CommentLikeView(View):
             'dislike_counter': cm.dislike_count
 
         }
-        messages.success(request, 'Your like has been submitted.',"success")
+        messages.success(request, 'Your like has been submitted.', "success")
 
         return JsonResponse(data)
 
@@ -365,7 +372,7 @@ class CommentDislikeView(View):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             data = {
-                'login_required':True
+                'login_required': True
             }
             return JsonResponse(data)
         return super().dispatch(request, *args, **kwargs)
@@ -381,7 +388,7 @@ class CommentDislikeView(View):
             cm.disliked_comment.remove(request.user)
             disliked = False
 
-        else :
+        else:
             cm.disliked_comment.add(request.user)
             disliked = True
 
@@ -392,23 +399,26 @@ class CommentDislikeView(View):
             'like_counter': cm.like_count,
             'dislike_counter': cm.dislike_count
         }
-        messages.success(request, 'Your dislike has been submitted.',"success")
+        messages.success(request, 'Your dislike has been submitted.', "success")
 
         return JsonResponse(data)
 
 
-# class CommentDislikeView(View):
-#     def get(self, request, cm_id):
-#         cm = get_object_or_404(Comment, id=cm_id)
-#         if cm.liked_comment.filter(id=request.user.id).exists():
-#             cm.liked_comment.remove(request.user)
-#
-#         if cm.disliked_comment.filter(id=request.user.id).exists():
-#             cm.disliked_comment.remove(request.user)
-#         else:
-#             cm.disliked_comment.add(request.user)
-#
-#         cm.save()
-#         messages.success(request, 'Your dislike has been submitted.', "success")
-#         return redirect('home:details', cm.product.id, cm.product.slug)
+class FavouriteProductsView(View):
+    def get(self,request, id):
+        url = request.META.get('HTTP_REFERER')
+        product = get_object_or_404(Product, id=id)
+        is_favourite = False
+        if product.favourite.filter(id=request.user.id).exists():
+            product.favourite.remove(request.user)
+            is_favourite = False
+            messages.success(request, 'Your product remove of your favourite.', "success")
+
+        else:
+            product.favourite.add(request.user)
+            is_favourite = True
+            messages.success(request, 'Your product add to your favourite.', "success")
+
+        return redirect(url)
+
 

@@ -64,7 +64,7 @@
                     <div class="form-group d-flex justify-content-evenly">
                         <label class="col-md-3 control-label" for="id_address">Address :</label>
                         <div class="col-md-8">
-                            <textarea name="address" class="form-control " cols="10" rows="2"
+                            <textarea name="address" class="form-control " cols="10" rows="2" value="{{ request.user.first_name }}"
                                       id="id_address">{{ request.user.address }}</textarea>
 
                         </div>

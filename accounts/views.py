@@ -1,5 +1,6 @@
 from datetime import timedelta, datetime
 from pyexpat.errors import messages
+from django.core.paginator import Paginator
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
@@ -7,6 +8,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from accounts.forms import UserRegisterForm, OtpForm, LoginForm, UserUpdateForm
 from accounts.models import User, Otp
+from cart.models import OrderItem
+from home.models import Product
 from utils.sms import send_otp
 from random import randint
 from django.contrib import messages
@@ -208,3 +211,24 @@ class UserChangePasswordView(View,LoginRequiredMixin):
             'form': form
         }
         return render(request, self.template_name, ctx)
+
+
+class FavouriteProductView(View):
+    def get(self,request):
+        products = request.user.fav_user.all()
+        paginator = Paginator(products, 6)
+        page_num = request.GET.get('page')
+        products = paginator.get_page(page_num)
+        page_url_data = request.GET.copy()
+        if 'page' in page_url_data:
+            del page_url_data['page']
+        # ctx = {
+        #    ' products': products
+        # }
+        return render(request, 'accounts/favourite.html',{'products':products,'page_num': page_num,'page_url_data': page_url_data,})
+
+
+class OrderHistoryView(View):
+    def get(self,request):
+        order_list = OrderItem.objects.filter(order__user_id=request.user.id)
+        return render(request,'accounts/history.html',{'order_list':order_list})

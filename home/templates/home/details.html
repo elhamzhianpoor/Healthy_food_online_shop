@@ -101,11 +101,20 @@
 
 
                         <div class="col-lg-6">
-                            <div class="d-flex justify-content-start ">
+                            <div class="d-flex justify-content-start align-items-center">
                                 <h4 class="fw-bold mb-3">{{ product.name }}</h4>
                                 <i class="{{ like_class }} fa-heart fs-3 text-danger ms-4 cursor"
-                                   onclick="product_like({{ product.id }},'{% url "home:product_like" %}','{% url "accounts:login" %}?next={% url 'home:details' product.id product.slug %}')" id="p_like"></i>
-                                <span class="ms-4" id="p_liker_count">{{ product.likes_count }}</span>
+                                   onclick="product_like({{ product.id }},'{% url "home:product_like" %}','{% url "accounts:login" %}?next={% url 'home:details' product.id product.slug %}')"
+                                   id="p_like"></i>
+                                <span class="ms-4 fw-bold" id="p_liker_count">{{ product.likes_count }}</span>
+                                {% if is_favourite %}
+                                    <a title="remove of favourites" href="{% url 'home:favourite_products' product.id %}"><i
+                                            class="bi bi-bookmark-star-fill fs-3 ms-3 text-primary "></i></a>
+                                {% else %}
+                                    <a title="add to favourites" href="{% url 'home:favourite_products' product.id %}"><i
+                                            class="bi bi-bookmark-star fs-3 ms-3 text-primary " ></i></a>
+
+                                {% endif %}
                             </div>
                             <p class="mb-3"><span class="text-dark bold"> Category : </span>{{ product.diet_category }}
                             </p>

@@ -16,7 +16,7 @@ class ImageInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'unit_price', 'modified', 'available_products','stock','status','average')
+    list_display = ('name', 'unit_price', 'modified', 'available_products','likes_count','stock','status','average')
     search_fields = ('name',)
     list_filter = ('available_products',)
     prepopulated_fields = {
@@ -25,7 +25,7 @@ class ProductAdmin(admin.ModelAdmin):
     raw_id_fields = ('diet_category','main_menu' ,'menu_item')
     inlines = [VariantInline,ImageInline]
     list_editable = ('unit_price', 'stock')
-    
+
 
 @admin.register(DietCategory)
 class DietCategoryAdmin(admin.ModelAdmin):

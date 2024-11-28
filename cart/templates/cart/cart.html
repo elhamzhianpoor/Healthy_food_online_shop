@@ -20,7 +20,7 @@
                 <table class="table">
                     <thead>
                     <tr>
-{#                        <th scope="col">number</th>#}
+                        {#                        <th scope="col">number</th>#}
                         <th scope="col"> product Image</th>
                         <th scope="col"> Product</th>
                         <th scope="col"> size</th>
@@ -33,9 +33,9 @@
                     <tbody>
                     {% for c in cart %}
                         <tr>
-{#                            <th scope="row">#}
-{#                                <div class="pt-4">  {{ forloop.counter }} </div>#}
-{#                            </th>#}
+                            {#                            <th scope="row">#}
+                            {#                                <div class="pt-4">  {{ forloop.counter }} </div>#}
+                            {#                            </th>#}
                             <td>
                                 <div class="d-flex align-items-center">
                                     <a href="{{ c.get_absolute_url }}"> <img src="{{ c.image.url }}" class="img-fluid  "
@@ -48,13 +48,13 @@
                             </td>
                             <td><p class="mb-0 mt-4">Normal</p></td>
                             <td>
-                                {% if c.discount  %}
+                                {% if c.discount %}
                                     <div class="d-flex align-items-center">
-                                        <span class="mb-0 mt-4 text-secondary me-3">  <del>{{ c.unit_price|floatformat|intcomma }}</del>  </span>
-                                        <span class="mb-0 mt-4 ">{{ c.price|floatformat|intcomma }}$</span>
+                                        <span class="mb-0 mt-4 me-3">{{ c.price|floatformat|intcomma }}$</span>
+                                        <span class="mb-0 mt-4 text-secondary ">  <del>{{ c.unit_price|floatformat|intcomma }}</del>  </span>
                                     </div>
                                 {% else %}
-                                    <p class="mb-0 mt-4 ms-5">{{ c.unit_price|floatformat|intcomma }}$</p>
+                                    <p class="mb-0 mt-4 ">{{ c.unit_price|floatformat|intcomma }}$</p>
                                 {% endif %}
 
                             </td>
@@ -66,7 +66,9 @@
                                             <i class="fa fa-minus"></i>
                                         </a>
                                     </div>
-                                    <input type="text" class="text-dark  text-center border-0 form-control form-control-sm" value="{{ c.quantity }}">
+                                    <input type="text"
+                                           class="text-dark  text-center border-0 form-control form-control-sm"
+                                           value="{{ c.quantity }}">
 
                                     <div class="input-group-btn">
                                         <a href="{% url 'cart:product_add_one' c.id %}"
@@ -78,7 +80,7 @@
                             </td>
                             <td>
 
-                                <p class="mb-0 mt-4"> $ {{ c.total_price|floatformat|intcomma  }}</p>
+                                <p class="mb-0 mt-4"> $ {{ c.total_price|floatformat|intcomma }}</p>
                             </td>
                             <td>
                                 <a href="{% url 'cart:remove_from_cart' c.id %}"
@@ -89,7 +91,7 @@
 
                         </tr>
                     {% endfor %}
-                      {% for v in var_cart %}
+                    {% for v in var_cart %}
                         <tr>
 
                             <td>
@@ -104,13 +106,14 @@
                             </td>
                             <td><p class="mb-0 mt-4">{{ v.size }}</p></td>
                             <td>
-                                {% if v.discount  %}
+                                {% if v.discount %}
                                     <div class="d-flex align-items-center">
-                                        <span class="mb-0 mt-4 text-secondary me-3">  <del>{{ v.unit_price|floatformat|intcomma }}</del> $ </span>
-                                        <span class="mb-0 mt-4 ">{{ v.price|floatformat|intcomma }}$</span>
+                                        <span class="mb-0 mt-4 me-3">{{ v.price|floatformat|intcomma }}$</span>
+                                        <span class="mb-0 mt-4 text-secondary ">  <del>{{ v.unit_price|floatformat|intcomma }}</del> $ </span>
+
                                     </div>
                                 {% else %}
-                                    <p class="mb-0 mt-4 ms-5">{{ v.unit_price|floatformat|intcomma }}$</p>
+                                    <p class="mb-0 mt-4 ">{{ v.unit_price|floatformat|intcomma }}$</p>
                                 {% endif %}
 
                             </td>
@@ -129,14 +132,14 @@
                                     <div class="input-group-btn">
                                         <a href="{% url 'cart:variant_add_one' v.id %}"
                                            class="btn btn-sm btn-plus rounded-circle bg-light border ">
-                                            <i class="fa fa-plus" {% if v.quantity == 1 %}disabled {% endif %} ></i>
+                                            <i class="fa fa-plus" {% if v.quantity == 1 %}disabled {% endif %}></i>
                                         </a>
                                     </div>
                                 </div>
                             </td>
                             <td>
 
-                                <p class="mb-0 mt-4"> $ {{ v.total_price|floatformat|intcomma  }}</p>
+                                <p class="mb-0 mt-4"> $ {{ v.total_price|floatformat|intcomma }}</p>
                             </td>
                             <td>
                                 <a href="{% url 'cart:var_remove_from_cart' v.id %}"
@@ -162,20 +165,20 @@
                                 <h5 class="mb-0 me-4">Subtotal:</h5>
                                 <p class="mb-0">${{ cart.total|add:var_cart.total|intcomma }}</p>
                             </div>
-{#                            <div class="d-flex justify-content-between">#}
-{#                                <h5 class="mb-0 me-4">Shipping cost :</h5>#}
-{#                                <p class="mb-0">${{ cart.shipping|add:var_cart.shipping|intcomma }}<i class="fas fa-shipping-fast"></i>#}
-{#                                </p>#}
-                                {#                                <div class="">#}
-                                {#                                    <p class="mb-0">your profit : $ {{ cart.total_profit }}</p>#}
-                                {#                                </div>#}
-{#                            </div>#}
+                            {#                            <div class="d-flex justify-content-between">#}
+                            {#                                <h5 class="mb-0 me-4">Shipping cost :</h5>#}
+                            {#                                <p class="mb-0">${{ cart.shipping|add:var_cart.shipping|intcomma }}<i class="fas fa-shipping-fast"></i>#}
+                            {#                                </p>#}
+                            {#                                <div class="">#}
+                            {#                                    <p class="mb-0">your profit : $ {{ cart.total_profit }}</p>#}
+                            {#                                </div>#}
+                            {#                            </div>#}
                             {#                            <p class="mb-0 text-end">Shipping .</p>#}
                         </div>
-{#                        <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">#}
-{#                            <h5 class="mb-0 ps-4 me-4">Total Price</h5>#}
-{#                            <p class="mb-0 pe-4">${{ cart.final_cost|add:var_cart.final_cost|intcomma }}</p>#}
-{#                        </div>#}
+                        {#                        <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">#}
+                        {#                            <h5 class="mb-0 ps-4 me-4">Total Price</h5>#}
+                        {#                            <p class="mb-0 pe-4">${{ cart.final_cost|add:var_cart.final_cost|intcomma }}</p>#}
+                        {#                        </div>#}
                         {% if cart or var_cart %}
                             <a href="{% url 'cart:order_create' %}"
                                class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4 mt-5"

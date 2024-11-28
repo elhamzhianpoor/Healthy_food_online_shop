@@ -13,6 +13,8 @@ urlpatterns = [
     path('reset/complete/', views.UserPasswordResetCompleteView.as_view(), name='reset_complete'),
     path('profile/',views.ProfileView.as_view(), name='profile'),
     path('profile/update/',views.ProfileEditView.as_view(), name='profile_update'),
+    path('favourite/',views.FavouriteProductView.as_view(), name='favourite_user'),
     path('change-password/',views.UserChangePasswordView.as_view(), name='change_password'),
+    path('order_history/',views.OrderHistoryView.as_view(), name='order_history'),
 
 ]

@@ -13,5 +13,6 @@ urlpatterns = [
     path('comment_like/',views.CommentLikeView.as_view(),name='comment_like'),
     path('comment_dislike/', views.CommentDislikeView.as_view(), name='comment_dislike'),
     path('product_like/',views.ProductLikeView.as_view(), name='product_like'),
+    path('favourite/<int:id>/',views.FavouriteProductsView.as_view(), name='favourite_products'),
 
 ]
