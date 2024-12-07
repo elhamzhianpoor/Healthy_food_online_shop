@@ -74,6 +74,7 @@ class ProductView(View):
     def get(self, request, id=None, slug=None):
         # print(request.session.get('cart'))
         products = Product.objects.all()
+        # var = Variant.objects.filter(available=True)
         minimum = Product.objects.aggregate(unit_price=Min('unit_price'))
         min_price = int(minimum['unit_price'])
         maximum = Product.objects.aggregate(unit_price=Max('unit_price'))
@@ -81,10 +82,8 @@ class ProductView(View):
         my_filter = ProductFilter(request.GET, queryset=products)
         products = my_filter.qs
         diet_list = DietCategory.objects.filter(available=True)
-        # if products.status != 'none':
-        #     vars = Variant.objects.filter(available=True)
-        # sizes = Size.objects.all()
 
+        # sizes = Size.objects.all()
         if id and slug:
             products = products.filter(diet_category__id=id, diet_category__slug=slug)
             # diet_list = DietCategory.objects.filter(available=True)
@@ -112,7 +111,7 @@ class ProductView(View):
             'max': max_price,
             'min': min_price,
             'data': urlencode(data),
-            # 'variant': vars,
+            # 'var': var,
             # 'sizes':sizes
         }
         return render(request, 'home/products.html', ctx)
@@ -179,7 +178,6 @@ class MenuItemView(View):
         if id and slug:
             products = products.filter(menu_item__id=id, menu_item__slug=slug)
             # diet_list = MenuItem.objects.filter(available=True)
-
         if search := request.GET.get('search'):
             products = products.filter(Q(name__icontains=search)
                                        | Q(description__icontains=search)
@@ -217,7 +215,7 @@ class ProductDetailsView(View):
 
     def get(self, request, *args, **kwargs):
         product = self.product_instance
-        products = Product.objects.all()
+        products = Product.objects.all().order_by('-discount')[:3]
         product_images = Image.objects.filter(product=self.product_instance)
         similar = product.tags.similar_objects()[:6]
         comment = Comment.objects.filter(product=product, is_reply=False).order_by('-created')
@@ -248,6 +246,7 @@ class ProductDetailsView(View):
             'similar': similar,
             'like_class': product.like_checkers(request.user),
             'is_favourite': is_favourite,
+
 
         }
         return render(request, self.template_name, ctx)
@@ -301,6 +300,14 @@ class ProductDetailsView(View):
 
             }
             return render(request, self.template_name, ctx)
+
+
+# class FeaturedProductView(View):
+#     def get(self, request):
+#
+#         products = Product.objects.all().order_by('-discount')
+#
+#         return render(request,'home/details.html',{'products': products})
 
 
 class ProductLikeView(View):
@@ -412,11 +419,13 @@ class FavouriteProductsView(View):
         if product.favourite.filter(id=request.user.id).exists():
             product.favourite.remove(request.user)
             is_favourite = False
+            product.total_favourite -= 1
             messages.success(request, 'Your product remove of your favourite.', "success")
 
         else:
             product.favourite.add(request.user)
             is_favourite = True
+            product.total_favourite += 1
             messages.success(request, 'Your product add to your favourite.', "success")
 
         return redirect(url)

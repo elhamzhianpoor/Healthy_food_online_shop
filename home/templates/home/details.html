@@ -108,11 +108,13 @@
                                    id="p_like"></i>
                                 <span class="ms-4 fw-bold" id="p_liker_count">{{ product.likes_count }}</span>
                                 {% if is_favourite %}
-                                    <a title="remove of favourites" href="{% url 'home:favourite_products' product.id %}"><i
-                                            class="bi bi-bookmark-star-fill fs-3 ms-3 text-primary "></i></a>
+                                    <a title="remove of favourites"
+                                       href="{% url 'home:favourite_products' product.id %}"><i
+                                            class="bi bi-bookmark-star-fill fs-3 ms-md-5 text-primary "></i></a>
                                 {% else %}
-                                    <a title="add to favourites" href="{% url 'home:favourite_products' product.id %}"><i
-                                            class="bi bi-bookmark-star fs-3 ms-3 text-primary " ></i></a>
+                                    <a title="add to favourites"
+                                       href="{% url 'home:favourite_products' product.id %}"><i
+                                            class="bi bi-bookmark-star fs-3 ms-md-5 text-primary "></i></a>
 
                                 {% endif %}
                             </div>
@@ -500,40 +502,80 @@
                                 </ul>
                             </div>
                         </div>
+                        <hr class="bold">
+                        {#                        <div class="col-lg-12">#}
+                        {#                            <h4 class="mb-4">Featured products</h4>#}
+                        {#                            {% for pro in products %}#}
+                        {#                                {% if pro.discount >= 10 %}#}
+                        {#                                    {% if pro.available_products %}#}
+                        {#                                        {% if product.id != pro.id %}#}
+                        {#                                            <div class="d-flex align-items-center justify-content-between mb-2">#}
+                        {#                                                <div class="rounded">#}
+                        {#                                                    <a href="{{ pro.get_absolute_url }}">#}
+                        {#                                                        <img src="{{ pro.image.url }}" class="img-fluid rounded"#}
+                        {#                                                             alt="Image" style="width: 100px; height: 80px;">#}
+                        {#                                                    </a>#}
+                        {#                                                </div>#}
+                        {#                                                <div>#}
+                        {#                                                    <h6 class="">{{ pro.name }}</h6>#}
+                        {#                                                    <div class="d-flex mb-4">#}
+                        {#                                                        <i class="fa fa-star  {% if  pro.average > 0 %}text-secondary {% endif %}"></i>#}
+                        {#                                                        <i class="fa fa-star  {% if  pro.average > 1 %}text-secondary {% endif %}"></i>#}
+                        {#                                                        <i class="fa fa-star  {% if pro.average > 2 %}text-secondary {% endif %}"></i>#}
+                        {#                                                        <i class="fa fa-star  {% if pro.average > 3 %}text-secondary {% endif %}"></i>#}
+                        {#                                                        <i class="fa fa-star  {% if pro.average > 4 %}text-secondary {% endif %}"></i>#}
+                        {#                                                    </div>#}
+                        {#                                                    <div class="d-flex ">#}
+                        {#                                                        <h5 class="fw-bold ">{{ pro.final_price|floatformat|intcomma }}</h5>#}
+                        {#                                                        <h5 class="text-danger text-decoration-line-through"> {{ pro.unit_price|floatformat|intcomma }} </h5>#}
+                        {#                                                        <h5>{{ pro.discount }}</h5>#}
+                        {##}
+                        {#                                                    </div>#}
+                        {#                                                </div>#}
+                        {#                                            </div>#}
+                        {##}
+                        {#                                        {% endif %}#}
+                        {#                                    {% endif %}#}
+                        {#                                {% endif %}#}
+                        {##}
+                        {#                            {% endfor %}#}
+                        {#                        </div>#}
                         <div class="col-lg-12">
                             <h4 class="mb-4">Featured products</h4>
                             {% for pro in products %}
-                                {% if pro.discount %}
-                                    {% if pro.available_products %}
-                                        {% if product.id != pro.id %}
-                                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                                <div class=" rounded" style="width: 80px; height: 80px;">
-                                                    <a href="{{ pro.get_absolute_url }}">
-                                                        <img src="{{ pro.image.url }}" class="img-fluid rounded"
-                                                             alt="Image">
-                                                    </a>
-                                                </div>
-                                                <div class=" ">
-                                                    <h6 class="">{{ pro.name }}</h6>
-                                                    <div class="d-flex mb-4">
-                                                        <i class="fa fa-star  {% if  pro.average > 0 %}text-secondary {% endif %}"></i>
-                                                        <i class="fa fa-star  {% if  pro.average > 1 %}text-secondary {% endif %}"></i>
-                                                        <i class="fa fa-star  {% if pro.average > 2 %}text-secondary {% endif %}"></i>
-                                                        <i class="fa fa-star  {% if pro.average > 3 %}text-secondary {% endif %}"></i>
-                                                        <i class="fa fa-star  {% if pro.average > 4 %}text-secondary {% endif %}"></i>
-                                                    </div>
-                                                    <div class="d-flex ">
-                                                        <h5 class="fw-bold ">{{ pro.final_price|floatformat|intcomma }}</h5>
-                                                        <h5 class="text-danger text-decoration-line-through"> {{ pro.unit_price|floatformat|intcomma }} </h5>
-
-                                                    </div>
-                                                </div>
+                                {% if product.id != pro.id %}
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <div class="rounded">
+                                            <a href="{{ pro.get_absolute_url }}">
+                                                <img src="{{ pro.image.url }}" class="img-fluid rounded"
+                                                     alt="Image" style="width: 100px; height: 80px;">
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <h6 class="">{{ pro.name }}</h6>
+                                            <div class="d-flex mb-4">
+                                                <i class="fa fa-star  {% if  pro.average > 0 %}text-secondary {% endif %}"></i>
+                                                <i class="fa fa-star  {% if  pro.average > 1 %}text-secondary {% endif %}"></i>
+                                                <i class="fa fa-star  {% if pro.average > 2 %}text-secondary {% endif %}"></i>
+                                                <i class="fa fa-star  {% if pro.average > 3 %}text-secondary {% endif %}"></i>
+                                                <i class="fa fa-star  {% if pro.average > 4 %}text-secondary {% endif %}"></i>
                                             </div>
+                                            <div class="d-flex ">
+                                                <h5 class="fw-bold ">{{ pro.final_price|floatformat|intcomma }}</h5>
+                                                <h5 class="text-danger text-decoration-line-through"> {{ pro.unit_price|floatformat|intcomma }} </h5>
+                                                <h5>{{ pro.discount }}</h5>
 
-                                        {% endif %}
-                                    {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 {% endif %}
                             {% endfor %}
+                            <div class="d-flex justify-content-center my-4">
+                                <a href="{% url 'home:details' product.id product.slug %}"
+                                   class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">View
+                                    More</a>
+                            </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="position-relative">

@@ -69,6 +69,8 @@
                                         {#                                   class="btn border border-secondary rounded-pill px-3 text-primary mt-2">#}
                                         <input value="most sell" name="sell" type="submit"
                                                class="btn border border-secondary rounded-pill px-3 text-primary mt-2">
+                                        <input value="most popular" name="favourite" type="submit"
+                                               class="btn border border-secondary rounded-pill px-3 text-primary mt-2">
 
 
                                     </div>
@@ -169,7 +171,7 @@
                                                 {{ filter.form.price }}
                                                 {{ filter.form.discount }}
                                                 {{ filter.form.sell }}
-                                                {#                                                     {{ filter.form.size }}#}
+                                                {{ filter.form.favourite }}
                                                 {#                                                     {{ filter.form.size }}#}
 
                                             </div>
@@ -205,61 +207,59 @@
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
 
                                                 <h6 class="discount ">{{ p.main_menu }} </h6>
-{#                                                {% if p.status == 'none' %}#}
-{#                                                    <h1>{{ p.sell }}</h1>#}
-{#                                                    {% else %}#}
-{#                                                    {% for v in vars %}#}
-{#                                                        {{ v.sell }}#}
-{#                                                    {% endfor %}#}
-{#                                                {% endif %}#}
+                                                {#                                                {% if p.status == 'none' %}#}
+                                                {#                                                    <h1>{{ p.sell }}</h1>#}
+                                                {#                                                    {% else %}#}
+                                                {#                                                    {% for v in vars %}#}
+                                                {#                                                        {{ v.sell }}#}
+                                                {#                                                    {% endfor %}#}
+                                                {#                                                {% endif %}#}
 
                                                 <h4 class="text-primary"> {{ p.name }}</h4>
+
+
                                                 {#                                                <h6 class="">{{ p.created|timesince }} ago </h6>#}
 
 
                                                 {#                                                <p>{{ p.description |truncatechars:20 }}</p>#}
-                                                {#                                                {% if p.status == 'size' %}#}
-                                                {#                                                    {% for var in p.p_variants.all %}#}
-                                                {#                                                        <div class="d-flex align-items-center ">#}
-                                                {#                                                            <p class="fw-bold mb-0 ">{{ var.size.name }}#}
-                                                {#                                                               <p class=" mb-0 "> : {{ var.unit_price|floatformat|intcomma }}</p>#}
-                                                {#                                                            {% if var.discount %}#}
-                                                {#                                                                <p class="disc_amount  rounded-pill align-items-center text-white#}
-                                                {#                                                                 fw-bold text-center bg-danger fs-6  ms-2 mt-3"#}
-                                                {#                                                                   style="height: 25px;width: 45px">{{ var.discount }}#}
-                                                {#                                                                %{% endif %}</p>#}
-                                                {#                                                            <br>#}
-                                                {#                                                        </div>#}
-                                                {#                                                    {% endfor %}#}
-                                                {#                                                {% endif %}#}
+{#                                                                                                {% if p.status == 'size' %}#}
+{#                                                                                                    {% for var in p.p_variants.all %}#}
+{#                                                                                                        <div class="d-flex align-items-center ">#}
+{#                                                                                                            <p class="fw-bold mb-0 ">{{ var.size.name }}#}
+{#                                                                                                               <p class=" mb-0 "> : {{ var.unit_price|floatformat|intcomma }}</p>#}
+{#                                                                                                            {% if var.discount %}#}
+{#                                                                                                                <p class="disc_amount  rounded-pill align-items-center text-white#}
+{#                                                                                                                 fw-bold text-center bg-danger fs-6  ms-2 mt-3"#}
+{#                                                                                                                   style="height: 25px;width: 45px">{{ var.discount }}#}
+{#                                                                                                                %{% endif %}</p>#}
+{#                                                                                                            <br>#}
+{#                                                                                                        </div>#}
+{#                                                                                                    {% endfor %}#}
+{#                                                                                                {% endif %}#}
                                                 <div class="d-flex justify-content-between flex-lg-wrap ">
-
-                                                    {#                                                    {% if p.status == 'none' %}#}
-                                                    {% if p.discount %}
-                                                        <div class="d-flex justify-content-between flex-lg-wrap  flex-column">
-                                                            <p class=" fs-5 fw-bold mb-0 ">
-                                                                {{ p.final_price|floatformat|intcomma }}$
-                                                            </p>
-
-                                                            <div class="d-flex justify-content-evenly flex-lg-wrap ">
-                                                                <p class="discount fs-6 fw-bold mb-0 me-4">
-                                                                    <strike>{{ p.unit_price|floatformat|intcomma }}</strike>
-                                                                    $
+                                                        {% if p.discount %}
+                                                            <div class="d-flex justify-content-between flex-lg-wrap  flex-column">
+                                                                <p class=" fs-5 fw-bold mb-0 ">
+                                                                    {{ p.final_price|floatformat|intcomma }}$
                                                                 </p>
-                                                                <div class="disc_amount  rounded-pill align-items-center text-white
+
+                                                                <div class="d-flex justify-content-evenly flex-lg-wrap ">
+                                                                    <p class="discount fs-6 fw-bold mb-0 me-4">
+                                                                        <strike>{{ p.unit_price|floatformat|intcomma }}</strike>
+                                                                        $
+                                                                    </p>
+                                                                    <div class="disc_amount  rounded-pill align-items-center text-white
                                                                  fw-bold text-center bg-danger fs-6 "
-                                                                     style="height: 25px;width: 45px">{{ p.discount }}
-                                                                    %
+                                                                         style="height: 25px;width: 45px">{{ p.discount }}
+                                                                        %
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        {% else %}
 
+                                                            <p class="text-dark fs-5 fw-bold mb-3 mt-2">{{ p.unit_price|floatformat|intcomma }}$</p>
+                                                        {% endif %}
 
-                                                    {% else %}
-
-                                                        <p class="text-dark fs-5 fw-bold mb-3 mt-2">{{ p.unit_price|floatformat|intcomma }}$</p>
-                                                    {% endif %}
-                                                    {#                                                    {% endif %}#}
                                                 </div>
 
                                                 <a href="{{ p.get_absolute_url }}"

@@ -22,6 +22,12 @@ class ProductFilter(django_filters.FilterSet):
         ('low sell', 'low sell'),
 
     }
+    choice_favourite = {
+        ('most popular', 'most popular'),
+        ('low popular', 'low popular'),
+
+    }
+
     price_1 = django_filters.NumberFilter(field_name='unit_price', lookup_expr='gte')
     price_2 = django_filters.NumberFilter(field_name='unit_price', lookup_expr='lte')
     size = django_filters.ModelMultipleChoiceFilter(queryset=Size.objects.all(),widget=forms.CheckboxSelectMultiple)
@@ -29,6 +35,7 @@ class ProductFilter(django_filters.FilterSet):
     created = django_filters.ChoiceFilter(choices=choice_create,method='create_filter')
     discount = django_filters.ChoiceFilter(choices=choice_discount,method='discount_filter')
     sell = django_filters.ChoiceFilter(choices=choice_sell,method='sell_filter')
+    favourite = django_filters.ChoiceFilter(choices=choice_favourite,method='favourite_filter')
     def price_filter(self, queryset, name, value):
         data = 'unit_price' if value == 'inexpensive' else '-unit_price'
         return queryset.order_by(data)
@@ -43,4 +50,8 @@ class ProductFilter(django_filters.FilterSet):
 
     def sell_filter(self, queryset, name, value):
         data = 'sell' if value == 'low sell' else '-sell'
+        return queryset.order_by(data)
+
+    def favourite_filter(self, queryset, name, value):
+        data = 'favourite' if value == 'low popular' else '-favourite'
         return queryset.order_by(data)

@@ -18,7 +18,7 @@ class Cart:
         cart = self.cart.copy()
         for p in products:
             cart[str(p.id)]['product'] = p.name
-            cart[str(p.id)]['image'] = p.image
+            cart[str(p.id)]['image'] = str(p.image)
             cart[str(p.id)]['id'] = p.id
             cart[str(p.id)]['discount'] = p.discount
             cart[str(p.id)]['price'] = str(p.final_price)
@@ -85,7 +85,7 @@ class VariantCart:
         variant_cart = self.variant_cart.copy()
         for v in variants:
             variant_cart[str(v.id)]['variant'] = v.product.name
-            variant_cart[str(v.id)]['image'] = v.product.image
+            variant_cart[str(v.id)]['image'] = str(v.product.image)
             variant_cart[str(v.id)]['id'] = v.id
             variant_cart[str(v.id)]['discount'] = v.discount
             variant_cart[str(v.id)]['size'] = v.size.name

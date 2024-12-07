@@ -19,25 +19,42 @@
             {% for o in order_list %}
                 <div class="container_t left">
                     {% if o.order.paid %}
-                        <i class="icon fa fa-gift"></i>
+                        <i title="Paid" class="icon fa fa-gift cursor"></i>
                     {% else %}
-                        <i class="icon fa fa-home"></i>
+                        <i title="Not Paid" class="icon fa fa-home cursor"></i>
                     {% endif %}
                     <div class="content">
                         <h3>name :{{ o.product.name }} &nbsp; price:{{ o.order.get_total_price }} &nbsp;
                             date:{{ o.order.created }}</h3>
+                        <img src="{{ o.product.image.url }}" style="height: 80px;width: 100px"
+                             class="rounded img-fluid">
+{#                         {% if o.order.paid %}#}
+{#                            <h3 class="text-primary mt-5">Paid</h3>#}
+{#                        {% else %}#}
+{#                            <h3 class="text-primary mt-5">Not Paid</h3>#}
+{##}
+{#                        {% endif %}#}
 
                     </div>
                 </div>
                 <div class="container_t right">
                     {% if o.order.paid %}
-                        <i class="icon fa fa-gift"></i>
+                        <i title="Paid" class="icon fa fa-gift cursor"></i>
                     {% else %}
-                        <i class="icon fa fa-home"></i>
+                        <i title="Not Paid" class="icon fa fa-home cursor"></i>
                     {% endif %}
                     <div class="content">
                         <h3>name :{{ o.product.name }} &nbsp; price:{{ o.order.get_total_price }} &nbsp;
                             date:{{ o.order.created }}</h3>
+                        <img src="{{ o.product.image.url }}" style="height: 80px;width: 100px"
+                             class="rounded img-fluid">
+{#                        {% if o.order.paid %}#}
+{#                            <h3 class="text-primary mt-5">Paid</h3>#}
+{#                        {% else %}#}
+{#                            <h3 class="text-primary mt-5">Not Paid</h3>#}
+{##}
+{#                        {% endif %}#}
+
 
                     </div>
                 </div>
