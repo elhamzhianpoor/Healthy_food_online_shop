@@ -232,3 +232,9 @@ class OrderHistoryView(View):
     def get(self,request):
         order_list = OrderItem.objects.filter(order__user_id=request.user.id)
         return render(request,'accounts/history.html',{'order_list':order_list})
+
+
+class RecentViewsView(View):
+    def get(self,request):
+        products = Product.objects.filter(view=request.user.id)
+        return render(request,'accounts/recent_views.html',{'products':products})

@@ -18,3 +18,10 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(Coupon)
 class CouponAdmin(admin.ModelAdmin):
     list_display = ('code','active','discount','from_date','to_date')
+
+
+class CompareAdmin(admin.ModelAdmin):
+    list_display = ('user','product','session_key')
+
+
+admin.site.register(Compare, CompareAdmin)

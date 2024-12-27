@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from home.forms import *
 from cart.forms import CartForm
-from home.models import Product, DietCategory, MainMenu, Comment, Image, MenuItem, Variant, Size
+from home.models import Product, DietCategory, MainMenu, Comment, Image, MenuItem, Variant, Size, Views
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib import messages
@@ -215,6 +215,14 @@ class ProductDetailsView(View):
 
     def get(self, request, *args, **kwargs):
         product = self.product_instance
+        ip = request.META.get('REMOTE_ADDER')
+        view = Views.objects.filter(product_id=product.id, ip=ip)
+        if not view.exists():
+            Views.objects.create(product_id=product.id, ip=ip)
+            product.num_views += 1
+            product.save()
+        if request.user.is_authenticated:
+            product.view.add(request.user)
         products = Product.objects.all().order_by('-discount')[:3]
         product_images = Image.objects.filter(product=self.product_instance)
         similar = product.tags.similar_objects()[:6]

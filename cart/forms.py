@@ -1,6 +1,7 @@
 from django import forms
 
 from accounts.models import User
+from cart.models import Compare
 
 
 class CartForm(forms.Form):
@@ -18,3 +19,9 @@ class UserInfoForm(forms.ModelForm):
 
 class CouponForm(forms.Form):
     code = forms.CharField()
+
+
+class CompareForm(forms.ModelForm):
+    class Meta:
+        model = Compare
+        fields = ['product']

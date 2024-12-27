@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}
+    favourite
+{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}" type="text/css" media="screen">
+
+
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="mt-5 text-center">Your Recently Views</h2>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 card mt-5 ">
+                {% for p in products %}
+                    <div class="d-flex align-items-center justify-content-start bg-light rounded p-3">
+                        <a class="border border-secondary rounded border-2" href="{{ p.get_absolute_url }}"><img
+                                src="{{ p.image.url }}"
+                                class="img-fluid  rounded "
+                                alt=""
+                                style="height: 200px;width: 300px"></a>
+                        <div class="d-flex  justify-content-start flex-column ms-5 ">
+                            <h4 class="text-primary"> {{ p.name }}</h4>
+                            {% if p.status == 'size' %}
+                                {% for var in p.p_variants.all %}
+                                    <div class="d-flex align-items-center ">
+                                        <p class="fw-bold mb-0 ">{{ var.size.name }}
+                                        <p class=" mb-0 "> : {{ var.unit_price|floatformat|intcomma }}</p>
+                                        {% if var.discount %}
+                                            <p class="disc_amount  rounded-pill align-items-center text-white
+                                                                                         fw-bold text-center bg-danger fs-6  ms-2 mt-3"
+                                               style="height: 25px;width: 45px">{{ var.discount }}
+                                            %{% endif %}</p>
+                                        <br>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% if p.status == 'none' %}
+                                {% if p.discount %}
+                                    <div class="d-flex justify-content-between flex-lg-wrap  flex-column">
+                                        <p class=" fs-5 fw-bold mb-0 ">
+                                            {{ p.final_price|floatformat|intcomma }}$
+                                        </p>
+
+                                        <div class="d-flex justify-content-evenly flex-lg-wrap ">
+                                            <p class="discount fs-6 fw-bold mb-0 me-4">
+                                                <strike>{{ p.unit_price|floatformat|intcomma }}</strike>
+                                                $
+                                            </p>
+                                            <div class="disc_amount  rounded-pill align-items-center text-white
+                                                                         fw-bold text-center bg-danger fs-6 "
+                                                 style="height: 25px;width: 45px">{{ p.discount }}
+                                                %
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                {% else %}
+
+                                    <p class="text-dark fs-5 fw-bold mb-3 mt-2">{{ p.unit_price|floatformat|intcomma }}$</p>
+                                {% endif %}
+                            {% endif %}
+                            {#                        <p>{{ p.final_price }}</p>#}
+                            <p>{{ p.description|safe }}</p>
+                            <div>
+                                <a href="{{ p.get_absolute_url }}"
+                                   class="btn border border-secondary rounded-pill px-3 text-primary "><i
+                                        class="fa fa-shopping-bag me-2 text-primary "></i> More</a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <br>
+                {% endfor %}
+            </div>
+            <div class="col-md-2"></div>
+
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+{% block js %}
+    <script src="{% static 'home/js/home.js' %}"></script>
+
+{% endblock %}

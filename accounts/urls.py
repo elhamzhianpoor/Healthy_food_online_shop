@@ -16,5 +16,6 @@ urlpatterns = [
     path('favourite/',views.FavouriteProductView.as_view(), name='favourite_user'),
     path('change-password/',views.UserChangePasswordView.as_view(), name='change_password'),
     path('order_history/',views.OrderHistoryView.as_view(), name='order_history'),
+    path('view/',views.RecentViewsView.as_view(), name='recent_view'),
 
 ]

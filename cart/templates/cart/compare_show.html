@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load static %}
+
+{% block title %}
+    compare page
+{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'home/css/home.css' %}" type="text/css" media="screen">
+
+
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="mt-5 text-center">Your Foods Selected for Compare</h2>
+        <div class="col-lg-12 card mt-5 " >
+            <div class="g-4 justify-content-evenly align-items-center row ">
+                {% for i in items %}
+                    <div class="col-md-5 d-flex  align-items-center justify-content-start bg-light rounded p-3 border" style="height: 280px">
+                        <a class="border border-secondary rounded border-2" href="{{ i.product.get_absolute_url }}"><img
+                                src="{{ i.product.image.url }}"
+                                class="img-fluid  rounded "
+                                alt=""
+                                style="height: 150px;width: 200px"></a>
+                        <div class="d-flex  justify-content-start flex-column ms-5 ">
+                            <h4 class="text-primary"> {{ i.product.name }}</h4>
+                            {% if i.product.status == 'size' %}
+                                {% for var in i.product.p_variants.all %}
+                                    <div class="d-flex align-items-center ">
+                                        <p class="fw-bold mb-0 ">{{ var.size.name }}
+                                        <p class=" mb-0 "> : {{ var.unit_price|floatformat|intcomma }}</p>
+                                        {% if var.discount %}
+                                            <p class="disc_amount  rounded-pill align-items-center text-white
+                                                                                         fw-bold text-center bg-danger fs-6  ms-3 mt-3"
+                                               style="height: 25px;width: 45px">{{ var.discount }}
+                                            %{% endif %}</p>
+                                        <br>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% if i.product.status == 'none' %}
+                                {% if i.product.discount %}
+                                    <div class="d-flex justify-content-between flex-lg-wrap  flex-column ">
+                                        <p class=" fs-5 fw-bold mb-0 ">
+                                            {{ i.product.final_price|floatformat|intcomma }}$
+                                        </p>
+
+                                        <div class="d-flex justify-content-start flex-lg-wrap ">
+                                            <p class="discount fs-6 fw-bold mb-0 me-4">
+                                                <strike>{{ i.product.unit_price|floatformat|intcomma }}</strike>
+                                                $
+                                            </p>
+                                            <div class="disc_amount  rounded-pill align-items-center text-white
+                                                                         fw-bold text-center bg-danger fs-6 ms-3"
+                                                 style="height: 25px;width: 45px">{{ i.product.discount }}
+                                                %
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                {% else %}
+
+                                    <p class="text-dark fs-5 fw-bold mb-3 mt-2">{{ i.product.unit_price|floatformat|intcomma }}$</p>
+                                {% endif %}
+                            {% endif %}
+                            {#                        <p>{{ p.final_price }}</p>#}
+                            <p>{{ i.product.description|safe }}</p>
+                            <div>
+                                <a href="{{ i.product.get_absolute_url }}"
+                                   class="btn border border-secondary rounded-pill px-3 text-primary "><i
+                                        class="fa fa-shopping-bag me-2 text-primary "></i> More</a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <br>
+                {% endfor %}
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+{% endblock %}
+{% block js %}
+    <script src="{% static 'home/js/home.js' %}"></script>
+
+{% endblock %}

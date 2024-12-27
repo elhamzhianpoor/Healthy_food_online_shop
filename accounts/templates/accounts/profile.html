@@ -121,24 +121,23 @@
                                         <p class="text-secondary mb-1">{{ request.user.phone_number }}</p>
                                     </div>
                                 </div>
-                                <div class="list-group list-group-flush text-center mt-4">
-                                    <a href="#" class="list-group-item list-group-item-action border-0 "
+                                <div class="list-group list-group-flush text-center mt-4 ">
+                                    <a href="#" class="list-group-item list-group-item-action border-0 active"
                                        onclick="showProfileDetails()">
                                         Profile Information
                                     </a>
-                                    <a href="#" class="list-group-item list-group-item-action border-0"
-                                       onclick="showOrderDetails()">Orders</a>
+
                                     <a href="{% url 'accounts:favourite_user' %}"
                                        class="list-group-item list-group-item-action border-0"
                                     >Favourites</a>
-                                     <a href="{% url 'accounts:order_history' %}"
+                                    <a href="{% url 'accounts:order_history' %}"
                                        class="list-group-item list-group-item-action border-0"
                                     >Order History</a>
+                                    <a href="{% url 'accounts:recent_view' %}"
+                                       class="list-group-item list-group-item-action border-0"
+                                    >Recently Views</a>
 
-                                    <a href="#" class="list-group-item list-group-item-action border-0 active"
-                                       onclick="showAddressBook()">
-                                        Address Book
-                                    </a>
+
                                     <a href="{% url 'accounts:profile_update' %}"
                                        class="list-group-item list-group-item-action border-0">Update Profile</a>
                                     <a href="{% url 'accounts:change_password' %}"

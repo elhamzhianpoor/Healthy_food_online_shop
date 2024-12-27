@@ -35,6 +35,8 @@ class Product(BaseModel):
     sell = models.IntegerField(default=0)
     favourite = models.ManyToManyField('accounts.User', related_name='fav_user', blank=True)
     total_favourite = models.IntegerField(default=0)
+    view = models.ManyToManyField('accounts.User', related_name='product_view', blank=True)
+    num_views = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -199,3 +201,10 @@ class Variant(BaseModel):
         return final_p
 
 
+class Views(models.Model):
+    ip = models.CharField(max_length=255,null=True,blank=True)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='views')
+    create = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.product.name

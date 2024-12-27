@@ -17,6 +17,8 @@ urlpatterns = [
     path('order/create/', views.OrderCreateView.as_view(), name='order_create'),
     path('order/start-pay/<int:order_id>',views.StartPayView.as_view(), name='start_pay'),
     path('order/verify-payment/',csrf_exempt(views.VerifyPaymentView.as_view()), name='verify_payment'),
+    path('compare/<int:id>/',views.CompareView.as_view(), name='compare'),
+    path('compare_show/',views.CompareShowView.as_view(), name='compare_show'),
 
 
 ]

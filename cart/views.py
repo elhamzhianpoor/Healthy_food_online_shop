@@ -2,7 +2,7 @@ from datetime import datetime
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-from cart.models import Order, OrderItem, Coupon
+from cart.models import Order, OrderItem, Coupon, Compare
 from home.models import Product, DietCategory, Variant
 from cart.cart import Cart, VariantCart
 from cart.forms import CartForm, UserInfoForm, CouponForm
@@ -22,6 +22,42 @@ class CartView(View):
             'diet_list': DietCategory.objects.all(),
         }
         return render(request, 'cart/cart.html', ctx)
+
+
+class CompareView(View):
+    def get(self, request,id):
+        url = request.META.get('HTTP_REFERER')
+        if request.user.is_authenticated:
+            item = get_object_or_404(Product, id=id)
+            qs = Compare.objects.filter(user_id=request.user.id,product_id=item.id)
+            if qs.exists():
+                messages.add_message(request, 200, f'{request.user.phone_number}'+' '+'your product is exists ', 'success')
+            else:
+                Compare.objects.create(user_id =request.user.id,product_id=item.id, session_key=None)
+                messages.add_message(request, 200, f'{request.user.phone_number}'+' '+'your product is added ', 'success')
+
+        else:
+            item = get_object_or_404(Product, id=id)
+            qs = Compare.objects.filter(user_id=None, product_id=item.id,session_key=request.session.session_key)
+            if qs.exists():
+                messages.add_message(request, 200, ' dear guest your product is exists ', 'success')
+            else:
+                if not request.session.session_key:
+                    request.session.create()
+                Compare.objects.create(user_id=None, product_id=item.id, session_key=request.session.session_key)
+                messages.add_message(request, 200, 'dear guest your product is added ', 'success')
+
+        return redirect(url)
+
+
+class CompareShowView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            items = Compare.objects.filter(user_id=request.user.id)
+            return render(request, 'cart/compare_show.html', {'items': items})
+        else:
+            items = Compare.objects.filter(session_key__exact=request.session.session_key,user_id= None)
+            return render(request, 'cart/compare_show.html', {'items': items})
 
 
 class AddToCartView(View):
@@ -263,3 +299,5 @@ class VerifyPaymentView(View):
             return render(request, 'cart/verify-payment.html', {'order': order})
 
         return render(request, '404.html')
+
+

@@ -57,6 +57,8 @@ class MenuItemAdmin(admin.ModelAdmin):
 admin.site.register(Size)
 admin.site.register(CookedSteak)
 admin.site.register(MainMenu)
+admin.site.register(Views)
+
 
 
 
