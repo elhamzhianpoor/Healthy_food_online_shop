@@ -224,6 +224,7 @@ class ProductDetailsView(View):
         if request.user.is_authenticated:
             product.view.add(request.user)
         products = Product.objects.all().order_by('-discount')[:3]
+
         product_images = Image.objects.filter(product=self.product_instance)
         similar = product.tags.similar_objects()[:6]
         comment = Comment.objects.filter(product=product, is_reply=False).order_by('-created')
@@ -254,6 +255,7 @@ class ProductDetailsView(View):
             'similar': similar,
             'like_class': product.like_checkers(request.user),
             'is_favourite': is_favourite,
+
 
 
         }

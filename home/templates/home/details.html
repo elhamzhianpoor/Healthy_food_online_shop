@@ -264,56 +264,40 @@
                             <div class="tab-content mb-5">
                                 <div class="tab-pane active" id="nav-about" role="tabpanel"
                                      aria-labelledby="nav-about-tab">
-                                    <p>The generated Lorem Ipsum is therefore always free from repetition injected
-                                        humour, or non-characteristic words etc.
-                                        Susp endisse ultricies nisi vel quam suscipit </p>
-                                    <p>Sabertooth peacock flounder; chain pickerel hatchetfish, pencilfish snailfish
-                                        filefish Antarctic
-                                        icefish goldeye aholehole trumpetfish pilot fish airbreathing catfish, electric
-                                        ray sweeper.</p>
+                                    <p>{{ product.description | safe }} </p>
+
                                     <div class="px-2">
                                         <div class="row g-4">
                                             <div class="col-6">
-                                                <div class="row bg-light align-items-center text-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Weight</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">1 kg</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row text-center align-items-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Country of Origin</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Agro Farm</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row bg-light text-center align-items-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Quality</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Organic</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row text-center align-items-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Сheck</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Healthy</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row bg-light text-center align-items-center justify-content-center py-2">
-                                                    <div class="col-6">
-                                                        <p class="mb-0">Min Weight</p>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <p class="mb-0">250 Kg</p>
-                                                    </div>
-                                                </div>
+                                                {% if product.tags %}
+                                                    {% for tags in product.tags.all %}
+
+                                                        <div class="row bg-light align-items-center text-center justify-content-center ">
+                                                            <div class="bg-white  " style="height: 15px">&nbsp;</div>
+                                                            <div class="col-3 align-items-center text-center justify-content-center pt-2 mb-0">
+                                                                <p class="">{{ tags }}</p>
+
+                                                            </div>
+
+                                                            {#                                                            <div class="col-6">#}
+                                                            {#                                                                <p class="">{{ t }}</p>#}
+                                                            {##}
+                                                            {#                                                            </div>#}
+                                                        </div>
+
+                                                        {#                                                        <div class="row text-center align-items-center justify-content-center py-2">#}
+                                                        {#                                                            <div class="col-6">#}
+                                                        {#                                                                <p class="mb-0">{{ ta }}</p>#}
+                                                        {#                                                            </div>#}
+                                                        {#                                                            <div class="col-6">#}
+                                                        {#                                                                <p class="">{{ tags }}</p>#}
+                                                        {##}
+                                                        {#                                                            </div>#}
+                                                        {#                                                        </div>#}
+                                                        {#                                            {% endfor %}#}
+
+                                                    {% endfor %}
+                                                {% endif %}
                                             </div>
                                         </div>
                                     </div>
